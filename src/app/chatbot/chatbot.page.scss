@@ -1,0 +1,161 @@
+ion-content {
+    --background: #ffffff !important;  // White background
+  }
+
+.text-small {
+    color: #545252;
+    font-family: Inter;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;;
+    margin-left: 25px;
+    margin-top: 25px;
+    cursor: pointer;
+  }
+
+  .Profile {
+    display: flex;
+    align-items: center;
+    margin-left: 120px;
+    margin-top: -20px;
+    cursor: pointer;
+    gap: -60px; // space between icon and text
+  }
+  
+  .profile {
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+    object-fit: cover;
+  }
+
+  .Profile-picture{
+    color: #000;
+    font-family: "Inknut Antiqua";
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 200;
+    line-height: normal;
+    margin-left: 20px;
+  }
+
+  .notification-icon{
+    display: flex;
+    align-items: center;
+    margin-left: 1150px;
+    margin-top: -100px;
+    cursor: pointer;
+    gap: -60px;
+  }
+
+  .notification {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    cursor: pointer;
+    object-fit: cover;
+  }
+
+  .rectangle-group {
+    display: flex;
+    flex-direction: row; /* Align items in a row */
+    justify-content: space-between; /* Space between items */
+    margin-top: -45px; /* Adjust as needed */
+    margin-left: 400px; /* Adjust as needed */
+  }
+
+  .rectangle {
+    display: flex;
+    justify-content: center;  // or space-between / space-around / flex-start
+    gap: 20px;                // space between rectangles
+    margin-top: 110px;
+    margin-left: 245px;
+    border-radius: 50px;
+    background: #F5EFFF;
+    width: 800px;
+    height: 250px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .text-rectangle {
+    font-family: "Inknut Antiqua";
+    font-size: 18px;
+    font-weight: 550;
+    margin-top: 180px;
+    color: #000;
+  }
+
+  .ellipse {
+    width: 130px;
+    height: 130px;
+    background-color:#E5D9F2;
+    border-radius: 50%;
+    position: absolute;
+    top: 30px; // adjust position
+    right: 335px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chat-icon{
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    cursor: pointer;
+  }
+
+  .topics{
+    color: #000;
+    font-family: "Inknut Antiqua";
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 200;
+    line-height: normal;
+    margin-left: 120px;
+  }
+
+  .rectangle1 {
+    display: flex;
+    justify-content: center;  // or space-between / space-around / flex-start
+    gap: 20px;                // space between rectangles
+    margin-top: -5px;
+    margin-left: 120px;
+    border-radius: 50px;
+    background: #F5EFFF;
+    width: 1100px;
+    height: 185px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .text-productivity {
+    font-family: "Inknut Antiqua";
+    font-size: 18px;
+    font-weight: 550;
+    margin-top: 130px;
+    margin-left: -800px;
+    color: #000;
+  }
+
+  .ellipse1 {
+    width: 110px;
+    height: 110px;
+    background-color:#E5D9F2;
+    border-radius: 50%;
+    position: absolute;
+    top: 20px; // adjust position
+    right: 900px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .productivity-icon{
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    cursor: pointer;
+  }

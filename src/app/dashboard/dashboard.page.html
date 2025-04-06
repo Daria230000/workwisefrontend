@@ -1,0 +1,103 @@
+<ion-header>
+  <div class="toolbar" style="background-color:pink; color: #000000;">  
+    <ion-buttons slot="start">
+      <div class="logo-container">
+        <img src="assets/images/logo.png" alt="WorkWise Logo" class="logo">
+      </div>
+    </ion-buttons>
+    <div class="title">Dashboard overview</div>
+
+    <div class="searchbar-container">
+      <ion-searchbar class="custom-searchbar" placeholder="Search..." animated></ion-searchbar>
+    </div>
+
+    <ion-buttons slot="end">
+      <div class="header-icon-container">
+        <!-- Icon 1 -->
+        <img src="assets/images/notification-bell.png" alt="Profile Icon" class="header-icon" />
+        <!-- Icon 2 -->
+        <img src="assets/images/setting.png" alt="Notification Icon" class="header-icon" />
+        <!-- Icon 3 -->
+        <img src="assets/images/female.png" alt="Settings Icon" class="header-icon" />
+      </div>
+    </ion-buttons>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true" style="--background: #F4F4F4;">
+  <div class="text-large">Mihaela Marcu,</div>
+  <div class="text-small">Welcome back!</div>
+  <div class="text-dashboard-icon">
+    <img src="assets/images/dashboard.png" alt="Dashboard Icon" class="text-dashboard" />
+    <div class="text-Dashboard">Dashboard</div>
+  </div>
+  <div class="text-productivity-icon">
+    <img src="assets/images/productivity.png" alt="Productivity Icon" class="text-productivity" />
+    <div class="text-Productivity">Productivity Analytics</div>
+  </div>
+  <div class="text-taskboard-icon">
+    <img src="assets/images/clipboard.png" alt="Taskboard Icon" class="text-taskboard" />
+    <div class="text-Taskboard">Task board</div>
+  </div>
+  <div class="text-sprint-icon">
+    <img src="assets/images/race.png" alt="Sprint Icon" class="text-sprint" />
+    <div class="text-Sprint">Sprint board</div>
+  </div>
+  <div class="text-ai-icon">
+    <img src="assets/images/ai.png" alt="AI Icon" class="text-ai" />
+    <div class="text-AI">AI Asisstant</div>
+  </div>
+  <div class="rectangle-group"></div>
+    <div class="rectangle">
+      <p class="text-rectangle">Tasks Completed</p>
+    </div>
+    <div class="rectangle1">
+      <p class="text-rectangle">Hours worked</p>
+    </div>
+    <div class="rectangle2">
+      <p class="text-rectangle">Ongoing Tasks</p>
+    </div>
+    <div class="rectangle3">
+      <p class="text-rectangle">Incompleted Tasks</p>
+    </div>
+    <div class="workinghours">
+      <p class="text-hours">Working Hours</p>
+      <p class="text-days">Monday-Friday</p>
+      <div class="schedule-days">
+        <p class="text-schedule">Mon</p>
+        <p class="text-schedule">Tue</p>
+        <p class="text-schedule">Wed</p>
+        <p class="text-schedule">Thu</p>
+        <p class="text-schedule">Fri</p>
+      </div>
+    </div>
+    <div class="categorytabel">
+      <div class="line-bar"></div>
+      <div class="line-bar"></div>
+      <div class="line-bar"></div>
+      <div class="line-bar"></div>
+    </div>
+    <div class="timing">
+      <div class="time1">Category</div>
+      <div class="time1">Precentage</div>
+      <div class="time1">Change</div>
+    </div>
+    <div class="timing1">
+      <p class="time2">Focus time</p>
+      <p class="time2">Break time</p>
+      <p class="time2">Distractions</p>
+      <p class="time2">Meetings</p>
+    </div>
+    <div class="timerec1"></div>
+    <div class="timerec2"></div>
+    <div class="timerec3"></div>
+    <div class="timerec4"></div>
+    <div class="text-help-icon">
+      <img src="assets/images/question.png" alt="Help Icon" class="text-help" />
+      <div class="text-Help">Help</div>
+    </div>
+    <div class="text-logout-icon">
+      <img src="assets/images/logout.png" alt="Logout Icon" class="text-logout" />
+      <div class="text-Logout">Log out</div>
+    </div>
+</ion-content>
