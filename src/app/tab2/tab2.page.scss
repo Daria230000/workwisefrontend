@@ -1,0 +1,243 @@
+*{
+  font-family: Poppins, Arial;
+  color:black;
+}
+
+ion-content {
+  --background: none; /* Remove Ionic's default background variable */
+
+  background: url('/assets/background.png') no-repeat center center;
+  background-size: cover; /* Ensures the image always fills the screen */
+  background-position: center;
+  background-attachment: fixed; /* Optional for parallax effect */
+  width: 100vw;
+  height: 80vh;
+}
+
+.logo {
+  margin:10px;
+  height: 100px; /* Adjust as needed */
+  max-width: 100%; /* Ensures it doesn't overflow */
+}
+
+ion-header, ion-toolbar {
+  --background: transparent !important; 
+  --ion-background-color: transparent !important;
+  background: rgba(0, 0, 0, 0) !important; /* Ensures no black background */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10; /* Keep it above content */
+  --border-width: 0px; /* Removes any default border */
+  --box-shadow: none; /* Removes shadow */
+  box-shadow: none !important; /* Ensures no shadow is applied */
+  border: none !important; /* Removes any borders */
+}
+
+.sign-up-option{
+  margin-left: 10px;
+  color: #0300D2;
+}
+
+ion-item {
+  --background: white; /* Ensure item background is transparent */
+  margin-top: 30px;
+  border-radius: 10px;
+  width:400px;
+}
+
+/* Make label text transparent */
+ion-label {
+  color: black !important; /* Slight transparency */
+}
+
+/* Make the input text white */
+ion-input {
+  color: black !important;
+  --placeholder-color: black;
+  --border: 2px solid black;
+
+}
+
+.shadow-item {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  border-radius: 15px;
+  padding: 2px;
+  background-color: white; // optional, for contrast
+  --background: white;
+}
+
+ion-icon {
+  font-size: 1.5rem;
+  color: black;
+
+  @media (max-width: 600px) {
+    font-size: 1.2rem;
+  }
+}
+
+.email-icon, .pass-icon, .person-icon{
+  margin: 2px 8px;
+}
+
+.sign-up-button{
+  background-color: #7371FC;
+  border-radius: 20px;
+  --border:none;
+  --box-shadow: none !important;
+  margin-top: 25px;
+  color:white;
+  font-weight: bold;
+}
+
+.sign-in-button{
+  --background:transparent;
+  color: #0300D2;
+  margin-top:-5px;
+  padding: 0px;
+}
+
+.login-container{
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  margin: 40px;
+}
+
+.welcome-container{
+  width:400px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 40px;
+}
+
+.center-container {
+  display: flex;                  /* Enable flexbox */
+  justify-content: center;        /* Center horizontally */
+  align-items: center;            /* Center vertically */
+  height: 100vh;                  /* Full viewport height */
+  width: 100vw;
+  position: fixed;
+}
+
+.sign-up-header{
+  font-size: 45px;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  color:black;
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+}
+
+  .welcome-header{
+  font-size: 45px;
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  word-wrap: break-word;
+  font-weight: 600;
+  color:black;
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+}
+
+.about{
+  font-size: 25px;
+  text-align: right;
+  margin: 0px;
+  padding: 0;
+  word-wrap: break-word;
+  font-weight: 500;
+  color:black;
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+}
+
+.icon-container{
+  display: flex;
+  justify-content:right;
+}
+
+.insta-icon, .facebook-icon, .linked-in-icon{
+  cursor:pointer;
+  margin-left: 15px;
+  transition: transform .3s ease-in-out;
+  width: 30px;
+  height: 30px;
+  margin: 20px;
+}
+
+.insta-icon:hover, .facebook-icon:hover, .linked-in-icon:hover{
+  transform: scale(1.5);
+}
+
+@media (min-width: 768px) {
+ion-content {
+  --padding-start: 20px;
+  --padding-end: 20px;
+}
+}
+
+@media (min-width: 1024px) {
+ion-content {
+  --padding-start: 40px;
+  --padding-end: 40px;
+}
+}
+
+
+ion-checkbox {
+--size: 20px;
+--checkbox-background-checked: #6815ec;
+--checkbox-background: white;
+--ion-color-checked: #6815ec;  /* Color of the checkmark when checked */
+}
+
+ion-checkbox::part(container) {
+border-radius: 6px;
+border: 2px solid #6815ec;
+}
+
+
+.input{
+  background-color: white;
+  border-radius: 15px;
+}
+
+
+.welcome{
+  margin-left: 10px;
+}
+
+@media (max-width: 768px) {
+  .center-container {
+    margin-top: 100px;
+    flex-direction: column; /* Stack the input and text vertically */
+    align-items: center; /* Align items to the start (left) */
+    justify-content: center;
+    position: relative;
+  }
+
+  .welcome {
+    margin-left: 0; /* Remove margin when stacked vertically */
+    margin-top: 5px; /* Add space between input and text when stacked */
+  }
+}
+
+.sign-in-header{
+  font-size: 45px;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  color:black;
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+}

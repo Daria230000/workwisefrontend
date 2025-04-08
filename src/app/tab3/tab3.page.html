@@ -1,17 +1,17 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+<ion-content>
+<div class="message-container">
+  <img class="logo" src="./assets/logo.png">
+  <h1 class="feedback-text">We've emailed you a code</h1>
+  <h2>To complete your account sign up, enter the code that was sent to:</h2>
+  <ion-label class="email">email&#64;gmail.com</ion-label>
+  <div class="code-container">
+    <div class="code-character-container"></div>
+    <div class="code-character-container"></div>
+    <div class="code-character-container"></div>
+    <div class="code-character-container"></div>
+    <div class="code-character-container"></div>
+  </div>
+  <ion-button class="verify-button">Verify</ion-button>
+  <h3 style="color:#0300D2; font-size:15px;">Didn’t receive an email?<ion-button class="resend-email-button" fill="clear">Resend email</ion-button></h3>
+</div>
 </ion-content>
