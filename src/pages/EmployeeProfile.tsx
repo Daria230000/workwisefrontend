@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
@@ -7,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   AreaChart,
   Area,
@@ -20,7 +20,16 @@ import {
   ResponsiveContainer,
   Tooltip
 } from 'recharts';
-import { Calendar, User, AlertTriangle, CheckCheck, Calendar as CalendarIcon, Check } from 'lucide-react';
+import { 
+  Calendar, 
+  User, 
+  Users,
+  AlertTriangle, 
+  CheckCheck, 
+  Calendar as CalendarIcon, 
+  Check,
+  ArrowUp
+} from 'lucide-react';
 
 // Mock data
 const employeeData = {

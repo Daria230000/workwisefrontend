@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -9,7 +10,22 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Building, Clock, Lock, CreditCard, User, Globe, Shield, Upload, Plus, Check, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Building, 
+  Clock, 
+  Lock, 
+  CreditCard, 
+  User, 
+  Users,
+  Globe, 
+  Shield, 
+  Upload, 
+  Plus, 
+  Check, 
+  X, 
+  Bell 
+} from 'lucide-react';
 
 const Settings: React.FC = () => {
   const [orgName, setOrgName] = useState('WorkWise Demo Organization');
