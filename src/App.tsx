@@ -11,7 +11,10 @@ import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import Employees from "./pages/Employees";
-import PlaceholderPage from "./pages/PlaceholderPage";
+import EmployeeProfile from "./pages/EmployeeProfile";
+import Reports from "./pages/Reports";
+import Alerts from "./pages/Alerts";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,9 +33,10 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/employees" element={<Employees />} />
-          <Route path="/reports" element={<PlaceholderPage />} />
-          <Route path="/alerts" element={<PlaceholderPage />} />
-          <Route path="/settings" element={<PlaceholderPage />} />
+          <Route path="/employee/:id" element={<EmployeeProfile />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/alerts" element={<Alerts />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

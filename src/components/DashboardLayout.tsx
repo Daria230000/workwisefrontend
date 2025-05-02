@@ -130,9 +130,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-purple-600"
+                className="text-purple-600 relative"
               >
                 <Bell className="h-5 w-5" />
+                <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
               </Button>
               
               <div className="ml-4 flex items-center">

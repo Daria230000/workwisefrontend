@@ -1,422 +1,342 @@
+
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, UserPlus, Filter, ChevronDown } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Search, Filter, AlertTriangle, ArrowUp, ArrowDown } from 'lucide-react';
 
-interface Employee {
-  id: number;
-  name: string;
-  position: string;
-  department: string;
-  email: string;
-  riskScore: number;
-  status: 'normal' | 'warning' | 'risk';
-  avatar: string;
-}
-
-const mockEmployees: Employee[] = [
+const employeeData = [
   {
-    id: 1,
-    name: 'Jane Smith',
-    position: 'Senior Developer',
+    id: '1',
+    name: 'Alice Cooper',
+    title: 'Senior Frontend Developer',
     department: 'Engineering',
-    email: 'jane.smith@workwise.com',
-    riskScore: 78,
-    status: 'risk',
-    avatar: 'JS',
+    team: 'Web Team',
+    manager: 'Jane Smith',
+    location: 'New York',
+    burnoutRisk: 85,
+    trend: 'up',
   },
   {
-    id: 2,
-    name: 'John Doe',
-    position: 'Product Manager',
-    department: 'Product',
-    email: 'john.doe@workwise.com',
-    riskScore: 45,
-    status: 'warning',
-    avatar: 'JD',
-  },
-  {
-    id: 3,
-    name: 'Alice Johnson',
-    position: 'UX Designer',
+    id: '2',
+    name: 'Bob Smith',
+    title: 'UX Designer',
     department: 'Design',
-    email: 'alice@workwise.com',
-    riskScore: 15,
-    status: 'normal',
-    avatar: 'AJ',
+    team: 'Mobile Team',
+    manager: 'Jane Smith',
+    location: 'San Francisco',
+    burnoutRisk: 78,
+    trend: 'up',
   },
   {
-    id: 4,
-    name: 'Robert Chen',
-    position: 'Frontend Developer',
-    department: 'Engineering',
-    email: 'robert@workwise.com',
-    riskScore: 25,
-    status: 'normal',
-    avatar: 'RC',
+    id: '3',
+    name: 'Carol Davis',
+    title: 'Marketing Specialist',
+    department: 'Marketing',
+    team: 'Growth Team',
+    manager: 'David Johnson',
+    location: 'Chicago',
+    burnoutRisk: 67,
+    trend: 'down',
   },
   {
-    id: 5,
-    name: 'Sarah Williams',
-    position: 'QA Engineer',
+    id: '4',
+    name: 'Dave Johnson',
+    title: 'Product Manager',
+    department: 'Product',
+    team: 'Mobile Team',
+    manager: 'Michael Brown',
+    location: 'Austin',
+    burnoutRisk: 64,
+    trend: 'up',
+  },
+  {
+    id: '5',
+    name: 'Eva Williams',
+    title: 'Backend Developer',
     department: 'Engineering',
-    email: 'sarah@workwise.com',
-    riskScore: 62,
-    status: 'warning',
-    avatar: 'SW',
+    team: 'API Team',
+    manager: 'Jane Smith',
+    location: 'Boston',
+    burnoutRisk: 58,
+    trend: 'down',
+  },
+  {
+    id: '6',
+    name: 'Frank Miller',
+    title: 'QA Engineer',
+    department: 'Engineering',
+    team: 'QA Team',
+    manager: 'Alice Cooper',
+    location: 'Denver',
+    burnoutRisk: 45,
+    trend: 'down',
+  },
+  {
+    id: '7',
+    name: 'Grace Lee',
+    title: 'DevOps Engineer',
+    department: 'Engineering',
+    team: 'Infra Team',
+    manager: 'Alice Cooper',
+    location: 'Seattle',
+    burnoutRisk: 42,
+    trend: 'stable',
+  },
+  {
+    id: '8',
+    name: 'Hank Wilson',
+    title: 'Sales Manager',
+    department: 'Sales',
+    team: 'Enterprise Team',
+    manager: 'Irene Garcia',
+    location: 'Miami',
+    burnoutRisk: 37,
+    trend: 'up',
   },
 ];
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'normal':
-      return 'bg-green-100 text-green-800';
-    case 'warning':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'risk':
-      return 'bg-red-100 text-red-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-};
-
-const getRiskColor = (score: number) => {
-  if (score < 30) return 'bg-green-500';
-  if (score < 60) return 'bg-yellow-500';
-  return 'bg-red-500';
-};
+const teamData = [
+  { name: 'Web Team', members: 8, avgBurnoutRisk: 63, department: 'Engineering' },
+  { name: 'Mobile Team', members: 6, avgBurnoutRisk: 72, department: 'Engineering' },
+  { name: 'API Team', members: 5, avgBurnoutRisk: 58, department: 'Engineering' },
+  { name: 'QA Team', members: 4, avgBurnoutRisk: 45, department: 'Engineering' },
+  { name: 'Growth Team', members: 7, avgBurnoutRisk: 52, department: 'Marketing' },
+  { name: 'Enterprise Team', members: 5, avgBurnoutRisk: 48, department: 'Sales' },
+  { name: 'Infra Team', members: 4, avgBurnoutRisk: 61, department: 'Engineering' },
+];
 
 const Employees: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [view, setView] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [departmentFilter, setDepartmentFilter] = useState('all');
+  const [teamFilter, setTeamFilter] = useState('all');
+  const [riskFilter, setRiskFilter] = useState('all');
   
-  const filteredEmployees = mockEmployees.filter(employee => {
-    if (view === 'risk' && employee.status !== 'risk') return false;
-    if (view === 'warning' && employee.status !== 'warning') return false;
-    if (view === 'normal' && employee.status !== 'normal') return false;
+  const filteredEmployees = employeeData.filter(employee => {
+    const matchesSearch = employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         employee.title.toLowerCase().includes(searchQuery.toLowerCase());
     
-    return employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           employee.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           employee.department.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDepartment = departmentFilter === 'all' || employee.department === departmentFilter;
+    const matchesTeam = teamFilter === 'all' || employee.team === teamFilter;
+    
+    let matchesRisk = true;
+    if (riskFilter === 'high') matchesRisk = employee.burnoutRisk >= 70;
+    else if (riskFilter === 'medium') matchesRisk = employee.burnoutRisk >= 50 && employee.burnoutRisk < 70;
+    else if (riskFilter === 'low') matchesRisk = employee.burnoutRisk < 50;
+    
+    return matchesSearch && matchesDepartment && matchesTeam && matchesRisk;
   });
-
+  
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-2xl font-bold text-gray-900">Employees</h1>
-          
-          <Button className="workwise-btn-primary bg-purple-600">
-            <UserPlus className="mr-2 h-4 w-4" />
-            Add Employee
-          </Button>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-            <Input
-              placeholder="Search employees..."
-              className="w-full pl-10"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          
-          <div className="flex gap-2">
-            <Button variant="outline" className="flex items-center gap-2">
-              <Filter className="h-4 w-4" />
-              Filters
-              <ChevronDown className="h-3 w-3" />
-            </Button>
-            
-            <Button variant="outline" className="flex items-center gap-2">
-              Department
-              <ChevronDown className="h-3 w-3" />
-            </Button>
-          </div>
-        </div>
-
-        <Tabs defaultValue="all" className="w-full" onValueChange={setView}>
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="risk">At Risk</TabsTrigger>
-            <TabsTrigger value="warning">Warning</TabsTrigger>
-            <TabsTrigger value="normal">Normal</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="all" className="mt-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>All Employees ({filteredEmployees.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-md border">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Employee
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Department
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Risk Score
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Status
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredEmployees.map((employee) => (
-                          <tr key={employee.id} className="hover:bg-gray-50 cursor-pointer">
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="h-10 w-10 flex-shrink-0">
-                                  <div className="h-10 w-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-medium">
-                                    {employee.avatar}
-                                  </div>
-                                </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">{employee.name}</div>
-                                  <div className="text-sm text-gray-500">{employee.position}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {employee.department}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                  <div className={`${getRiskColor(employee.riskScore)} h-2.5 rounded-full`} style={{ width: `${employee.riskScore}%` }}></div>
-                                </div>
-                                <span className="ml-2 text-sm text-gray-600">{employee.riskScore}%</span>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(employee.status)}`}>
-                                {employee.status === 'risk' ? 'At Risk' : employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="risk" className="mt-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>At Risk Employees ({filteredEmployees.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-md border">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Employee
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Department
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Risk Score
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Status
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredEmployees.map((employee) => (
-                          <tr key={employee.id} className="hover:bg-gray-50 cursor-pointer">
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="h-10 w-10 flex-shrink-0">
-                                  <div className="h-10 w-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-medium">
-                                    {employee.avatar}
-                                  </div>
-                                </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">{employee.name}</div>
-                                  <div className="text-sm text-gray-500">{employee.position}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {employee.department}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                  <div className={`${getRiskColor(employee.riskScore)} h-2.5 rounded-full`} style={{ width: `${employee.riskScore}%` }}></div>
-                                </div>
-                                <span className="ml-2 text-sm text-gray-600">{employee.riskScore}%</span>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(employee.status)}`}>
-                                {employee.status === 'risk' ? 'At Risk' : employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="warning" className="mt-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>Warning Employees ({filteredEmployees.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-md border">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Employee
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Department
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Risk Score
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Status
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredEmployees.map((employee) => (
-                          <tr key={employee.id} className="hover:bg-gray-50 cursor-pointer">
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="h-10 w-10 flex-shrink-0">
-                                  <div className="h-10 w-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-medium">
-                                    {employee.avatar}
-                                  </div>
-                                </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">{employee.name}</div>
-                                  <div className="text-sm text-gray-500">{employee.position}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {employee.department}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                  <div className={`${getRiskColor(employee.riskScore)} h-2.5 rounded-full`} style={{ width: `${employee.riskScore}%` }}></div>
-                                </div>
-                                <span className="ml-2 text-sm text-gray-600">{employee.riskScore}%</span>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(employee.status)}`}>
-                                {employee.status === 'risk' ? 'At Risk' : employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="normal" className="mt-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>Normal Employees ({filteredEmployees.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-md border">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Employee
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Department
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Risk Score
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Status
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredEmployees.map((employee) => (
-                          <tr key={employee.id} className="hover:bg-gray-50 cursor-pointer">
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="h-10 w-10 flex-shrink-0">
-                                  <div className="h-10 w-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-medium">
-                                    {employee.avatar}
-                                  </div>
-                                </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">{employee.name}</div>
-                                  <div className="text-sm text-gray-500">{employee.position}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {employee.department}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                  <div className={`${getRiskColor(employee.riskScore)} h-2.5 rounded-full`} style={{ width: `${employee.riskScore}%` }}></div>
-                                </div>
-                                <span className="ml-2 text-sm text-gray-600">{employee.riskScore}%</span>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(employee.status)}`}>
-                                {employee.status === 'risk' ? 'At Risk' : employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+      <div className="mb-6 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Employees</h1>
+        <Button className="bg-purple-600 hover:bg-purple-700">Add Employee</Button>
       </div>
+      
+      <Tabs defaultValue="employees" className="mb-6">
+        <TabsList className="mb-6">
+          <TabsTrigger value="employees">Employees</TabsTrigger>
+          <TabsTrigger value="teams">Teams</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="employees">
+          <Card className="mb-6">
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <Input
+                    placeholder="Search by name or position..."
+                    className="pl-10"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+                    <SelectTrigger className="w-[160px]">
+                      <SelectValue placeholder="Department" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Departments</SelectItem>
+                      <SelectItem value="Engineering">Engineering</SelectItem>
+                      <SelectItem value="Design">Design</SelectItem>
+                      <SelectItem value="Marketing">Marketing</SelectItem>
+                      <SelectItem value="Product">Product</SelectItem>
+                      <SelectItem value="Sales">Sales</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select value={teamFilter} onValueChange={setTeamFilter}>
+                    <SelectTrigger className="w-[160px]">
+                      <SelectValue placeholder="Team" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Teams</SelectItem>
+                      <SelectItem value="Web Team">Web Team</SelectItem>
+                      <SelectItem value="Mobile Team">Mobile Team</SelectItem>
+                      <SelectItem value="API Team">API Team</SelectItem>
+                      <SelectItem value="QA Team">QA Team</SelectItem>
+                      <SelectItem value="Growth Team">Growth Team</SelectItem>
+                      <SelectItem value="Enterprise Team">Enterprise Team</SelectItem>
+                      <SelectItem value="Infra Team">Infra Team</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select value={riskFilter} onValueChange={setRiskFilter}>
+                    <SelectTrigger className="w-[160px]">
+                      <SelectValue placeholder="Risk Level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Risk Levels</SelectItem>
+                      <SelectItem value="high">High Risk (70%+)</SelectItem>
+                      <SelectItem value="medium">Medium Risk (50-69%)</SelectItem>
+                      <SelectItem value="low">Low Risk (0-49%)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="py-3 text-left">Name</th>
+                  <th className="py-3 text-left">Department</th>
+                  <th className="py-3 text-left">Team</th>
+                  <th className="py-3 text-left">Manager</th>
+                  <th className="py-3 text-left">Location</th>
+                  <th className="py-3 text-left">Burnout Risk</th>
+                  <th className="py-3 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {filteredEmployees.map((employee) => (
+                  <tr key={employee.id} className="hover:bg-purple-50">
+                    <td className="py-4">
+                      <div className="flex items-center">
+                        <div className="h-9 w-9 rounded-full bg-purple-100 flex items-center justify-center text-sm font-semibold text-purple-700 mr-3">
+                          {employee.name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <div>
+                          <p className="font-medium">{employee.name}</p>
+                          <p className="text-sm text-gray-500">{employee.title}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-4">{employee.department}</td>
+                    <td className="py-4">{employee.team}</td>
+                    <td className="py-4">{employee.manager}</td>
+                    <td className="py-4">{employee.location}</td>
+                    <td className="py-4">
+                      <div className="flex items-center">
+                        <div className={`font-medium mr-2 ${
+                          employee.burnoutRisk >= 70 ? 'text-red-500' :
+                          employee.burnoutRisk >= 50 ? 'text-orange-500' :
+                          'text-green-500'
+                        }`}>
+                          {employee.burnoutRisk}%
+                        </div>
+                        {employee.trend === 'up' && <ArrowUp size={16} className="text-red-500" />}
+                        {employee.trend === 'down' && <ArrowDown size={16} className="text-green-500" />}
+                      </div>
+                    </td>
+                    <td className="py-4">
+                      <Link to={`/employee/${employee.id}`}>
+                        <Button variant="outline" size="sm" className="text-purple-600 border-purple-200">
+                          View Profile
+                        </Button>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            
+            {filteredEmployees.length === 0 && (
+              <div className="py-12 text-center">
+                <p className="text-gray-500">No employees found matching your filters.</p>
+              </div>
+            )}
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="teams">
+          <Card className="mb-6">
+            <CardContent className="pt-6">
+              <div className="flex gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <Input placeholder="Search teams..." className="pl-10" />
+                </div>
+                <Select defaultValue="all">
+                  <SelectTrigger className="w-[160px]">
+                    <SelectValue placeholder="Department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Departments</SelectItem>
+                    <SelectItem value="engineering">Engineering</SelectItem>
+                    <SelectItem value="design">Design</SelectItem>
+                    <SelectItem value="marketing">Marketing</SelectItem>
+                    <SelectItem value="product">Product</SelectItem>
+                    <SelectItem value="sales">Sales</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {teamData.map((team, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <CardTitle>{team.name}</CardTitle>
+                  <CardDescription>{team.department}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500">Members</span>
+                      <span className="font-medium">{team.members}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500">Avg. Burnout Risk</span>
+                      <span className={`font-medium ${
+                        team.avgBurnoutRisk >= 70 ? 'text-red-500' :
+                        team.avgBurnoutRisk >= 50 ? 'text-orange-500' :
+                        'text-green-500'
+                      }`}>{team.avgBurnoutRisk}%</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500">Tasks Completed</span>
+                      <span className="font-medium">147</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500">Sick Days</span>
+                      <span className="font-medium">12</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6">
+                    <Button className="w-full bg-purple-600 hover:bg-purple-700">View Team</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
     </DashboardLayout>
   );
 };
