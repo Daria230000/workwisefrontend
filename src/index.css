@@ -7,7 +7,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 252 100% 99%;
     --foreground: 222 18% 26%;
 
     --card: 0 0% 100%;
@@ -16,34 +16,34 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 18% 26%;
 
-    --primary: 217 100% 50%;
+    --primary: 252 96% 68%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 100% 97%;
-    --secondary-foreground: 217 100% 50%;
+    --secondary: 252 100% 95%;
+    --secondary-foreground: 252 96% 68%;
 
-    --muted: 210 20% 98%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 252 20% 96%;
+    --muted-foreground: 252 16% 47%;
 
-    --accent: 217 100% 97%;
+    --accent: 252 100% 97%;
     --accent-foreground: 222 18% 26%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 217 100% 50%;
+    --border: 252 32% 91%;
+    --input: 252 32% 91%;
+    --ring: 252 96% 68%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 217 100% 50%;
+    --sidebar-background: 252 96% 68%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 217 100% 50%;
-    --sidebar-accent: 218 100% 45%;
+    --sidebar-primary-foreground: 252 96% 68%;
+    --sidebar-accent: 253 96% 63%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 218 100% 45%;
+    --sidebar-border: 253 96% 63%;
     --sidebar-ring: 0 0% 100%;
   }
 }
@@ -64,14 +64,22 @@
   background-position: center;
 }
 
+.auth-gradient {
+  background: linear-gradient(135deg, #F5F1FF 0%, #D5CCFF 50%, #8269FF 100%);
+}
+
 .workwise-input {
-  @apply h-12 rounded-lg border border-workwise-border bg-white px-4 py-2 text-workwise-text focus:border-workwise-blue focus:outline-none focus:ring-1 focus:ring-workwise-blue;
+  @apply h-12 rounded-2xl border border-purple-100 bg-white px-4 py-2 text-workwise-text focus:border-purple-600 focus:outline-none focus:ring-1 focus:ring-purple-600;
 }
 
 .workwise-btn-primary {
-  @apply h-12 rounded-lg bg-workwise-blue px-5 py-2.5 text-center font-medium text-white transition-colors hover:bg-workwise-darkBlue focus:outline-none focus:ring-2 focus:ring-workwise-blue;
+  @apply h-12 rounded-full bg-purple-600 px-5 py-2.5 text-center font-medium text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600;
 }
 
 .workwise-btn-secondary {
-  @apply h-12 rounded-lg bg-workwise-lightBlue px-5 py-2.5 text-center font-medium text-workwise-blue transition-colors hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-workwise-blue;
+  @apply h-12 rounded-full bg-purple-100 px-5 py-2.5 text-center font-medium text-purple-600 transition-colors hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-600;
+}
+
+.workwise-card {
+  @apply bg-white rounded-2xl shadow-sm p-5;
 }

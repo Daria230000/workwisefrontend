@@ -56,7 +56,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="flex h-screen bg-workwise-gray">
+    <div className="flex h-screen bg-purple-50">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div 
@@ -67,7 +67,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-sidebar transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-purple-600 transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -78,7 +78,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               variant="ghost"
               size="icon"
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-white hover:bg-sidebar-accent"
+              className="lg:hidden text-white hover:bg-purple-700"
             >
               <X className="h-6 w-6" />
             </Button>
@@ -98,11 +98,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </nav>
           </div>
           
-          <div className="border-t border-sidebar-border p-4">
+          <div className="border-t border-purple-500 p-4">
             <Link to="/sign-in">
               <Button 
                 variant="ghost" 
-                className="w-full justify-start text-white hover:bg-sidebar-accent hover:text-white"
+                className="w-full justify-start text-white hover:bg-purple-700 hover:text-white"
               >
                 <LogOut className="mr-2 h-5 w-5" />
                 Sign out
@@ -115,7 +115,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b border-workwise-border">
+        <header className="bg-white border-b border-purple-100">
           <div className="flex h-16 items-center justify-between px-4">
             <Button
               variant="ghost"
@@ -130,13 +130,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-workwise-darkGray"
+                className="text-purple-600"
               >
                 <Bell className="h-5 w-5" />
               </Button>
               
               <div className="ml-4 flex items-center">
-                <div className="h-8 w-8 rounded-full bg-workwise-blue text-white flex items-center justify-center">
+                <div className="h-8 w-8 rounded-full bg-purple-600 text-white flex items-center justify-center">
                   JS
                 </div>
                 <span className="ml-2 text-sm font-medium hidden sm:block">Jane Smith</span>

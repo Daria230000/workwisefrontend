@@ -64,9 +64,9 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				workwise: {
-					blue: '#0062FF',
-					lightBlue: '#EBF5FF',
-					darkBlue: '#004ED6',
+					blue: '#7C69F3',
+					lightBlue: '#F5F1FF',
+					darkBlue: '#5A4AC9',
 					gray: '#F7F8FA',
 					darkGray: '#6E7787',
 					text: '#3A3F4B',

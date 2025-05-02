@@ -1,16 +1,15 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthLayout from '../components/AuthLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Mail, Lock, Facebook, Instagram, Linkedin } from 'lucide-react';
+import Logo from '../components/Logo';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -26,77 +25,104 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <AuthLayout 
-      title="Sign in to your account" 
-      subtitle="Welcome back! Please enter your details."
-    >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-workwise-darkGray">
-              <Mail size={18} />
-            </div>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@company.com"
-              className="workwise-input pl-10"
-              required
-            />
+    <div className="flex min-h-screen">
+      <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2">
+        <div className="mx-auto w-full max-w-md">
+          <div className="mb-8">
+            <Logo />
           </div>
-        </div>
+          
+          <h2 className="mb-6 text-3xl font-bold text-gray-900">
+            Sign in
+          </h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <div className="relative">
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  className="workwise-input pl-10"
+                  required
+                />
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                  <Mail size={18} />
+                </div>
+              </div>
+            </div>
 
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
-            <Link to="/forgot-password" className="text-sm font-medium text-workwise-blue hover:underline">
-              Forgot password?
-            </Link>
-          </div>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-workwise-darkGray">
-              <Lock size={18} />
+            <div>
+              <div className="relative">
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  className="workwise-input pl-10"
+                  required
+                />
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                  <Lock size={18} />
+                </div>
+              </div>
             </div>
-            <Input
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="workwise-input pl-10"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-workwise-darkGray"
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Checkbox id="remember" className="h-4 w-4 border-gray-300" />
+                <label htmlFor="remember" className="ml-2 text-sm text-gray-700">
+                  Remember me
+                </label>
+              </div>
+              <Link to="/forgot-password" className="text-sm font-medium text-purple-600 hover:underline">
+                Forgot password?
+              </Link>
+            </div>
+
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="workwise-btn-primary w-full"
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
+              {isLoading ? 'Signing in...' : 'Sign in'}
+            </Button>
+
+            <div className="text-center">
+              <span className="text-sm text-gray-600">
+                Don't have an account?{' '}
+                <Link to="/sign-up" className="font-medium text-purple-600 hover:underline">
+                  Sign up
+                </Link>
+              </span>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div className="hidden lg:block lg:w-1/2 auth-gradient">
+        <div className="flex h-full flex-col items-center justify-center p-12 text-center">
+          <h2 className="mb-4 text-4xl font-bold text-gray-900">
+            Hello, Welcome to WorkWise!
+          </h2>
+          <p className="mb-8 text-xl text-gray-800">
+            Manage tasks, time, teamwork more efficient and easy
+          </p>
+          <div className="flex space-x-4">
+            <a href="#" className="text-black hover:text-purple-600">
+              <Facebook size={24} />
+            </a>
+            <a href="#" className="text-black hover:text-purple-600">
+              <Instagram size={24} />
+            </a>
+            <a href="#" className="text-black hover:text-purple-600">
+              <Linkedin size={24} />
+            </a>
           </div>
         </div>
-
-        <Button 
-          type="submit" 
-          disabled={isLoading}
-          className="workwise-btn-primary w-full"
-        >
-          {isLoading ? 'Signing in...' : 'Sign in'}
-        </Button>
-
-        <div className="text-center">
-          <span className="text-sm text-workwise-darkGray">
-            Don't have an account?{' '}
-            <Link to="/sign-up" className="font-medium text-workwise-blue hover:underline">
-              Sign up
-            </Link>
-          </span>
-        </div>
-      </form>
-    </AuthLayout>
+      </div>
+    </div>
   );
 };
 

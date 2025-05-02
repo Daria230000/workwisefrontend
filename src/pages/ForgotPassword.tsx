@@ -1,11 +1,10 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import AuthLayout from '../components/AuthLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Mail, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Mail, ArrowLeft } from 'lucide-react';
+import Logo from '../components/Logo';
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -23,91 +22,76 @@ const ForgotPassword: React.FC = () => {
     }, 1500);
   };
 
-  if (isSubmitted) {
-    return (
-      <AuthLayout title="Reset password">
-        <div className="flex flex-col items-center justify-center space-y-6 p-6">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-workwise-lightBlue">
-            <CheckCircle className="h-8 w-8 text-workwise-blue" />
-          </div>
-          
-          <div className="text-center">
-            <h3 className="text-xl font-medium text-workwise-text">
-              Reset link sent
-            </h3>
-            <p className="mt-2 text-workwise-darkGray">
-              We've sent a password reset link to <span className="font-medium text-workwise-blue">{email}</span>
-            </p>
-          </div>
-          
-          <div className="w-full space-y-4 pt-4">
-            <Button 
-              variant="outline"
-              className="workwise-btn-secondary w-full"
-              onClick={() => setIsSubmitted(false)}
-            >
-              Resend reset link
-            </Button>
-            
-            <Link to="/sign-in" className="block w-full">
-              <Button 
-                variant="outline" 
-                className="w-full border-workwise-border text-workwise-darkGray hover:bg-gray-50"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to sign in
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </AuthLayout>
-    );
-  }
-
   return (
-    <AuthLayout 
-      title="Reset your password" 
-      subtitle="Enter your email and we'll send you a link to reset your password"
-    >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-workwise-darkGray">
-              <Mail size={18} />
-            </div>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@company.com"
-              className="workwise-input pl-10"
-              required
-            />
-          </div>
+    <div className="min-h-screen auth-gradient">
+      <div className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
+        <div className="mb-6">
+          <Logo />
         </div>
+        
+        <div className="w-full max-w-md bg-white bg-opacity-10 p-8 rounded-3xl backdrop-blur-sm shadow-sm">
+          <h2 className="mb-2 text-3xl font-bold text-center text-gray-900">
+            Forgot Password?
+          </h2>
+          
+          {!isSubmitted ? (
+            <>
+              <p className="mb-6 text-center text-gray-600">
+                Enter your e-mail adress, and we'll give you reset instruction
+              </p>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter E-mail Address"
+                  className="w-full h-14 rounded-xl border border-gray-200 bg-gray-100 bg-opacity-50 px-4"
+                  required
+                />
 
-        <Button 
-          type="submit" 
-          disabled={isLoading}
-          className="workwise-btn-primary w-full"
-        >
-          {isLoading ? 'Sending...' : 'Send reset link'}
-        </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="workwise-btn-primary w-full bg-purple-600"
+                >
+                  {isLoading ? 'Sending...' : 'Send New Password'}
+                </Button>
 
-        <Link to="/sign-in" className="block w-full">
-          <Button 
-            type="button" 
-            variant="outline" 
-            className="w-full border-workwise-border text-workwise-darkGray hover:bg-gray-50"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to sign in
-          </Button>
-        </Link>
-      </form>
-    </AuthLayout>
+                <Link to="/sign-in" className="block text-center w-full">
+                  <span className="text-purple-600 hover:underline">
+                    Back to Login
+                  </span>
+                </Link>
+              </form>
+            </>
+          ) : (
+            <div className="text-center">
+              <p className="mb-6 text-gray-600">
+                We've sent a password reset link to <span className="font-medium text-purple-600">{email}</span>
+              </p>
+              
+              <div className="space-y-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsSubmitted(false)}
+                  className="workwise-btn-secondary w-full"
+                >
+                  Resend reset link
+                </Button>
+                
+                <Link to="/sign-in" className="block w-full">
+                  <Button variant="outline" className="w-full border-gray-200 text-gray-600 hover:bg-gray-50">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to sign in
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 

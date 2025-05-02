@@ -1,53 +1,93 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import AuthLayout from '../components/AuthLayout';
 import { Button } from '@/components/ui/button';
-import { CheckCircle } from 'lucide-react';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import Logo from '../components/Logo';
 
 const VerifyEmail: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const email = location.state?.email || 'your email';
+  const email = location.state?.email || 'email@gmail.com';
+  const [value, setValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleContinue = () => {
-    navigate('/dashboard');
+  const handleVerify = () => {
+    setIsLoading(true);
+    
+    // For demo purposes
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate('/dashboard');
+    }, 1500);
+  };
+
+  const handleResend = () => {
+    // For demo purposes
+    alert('Verification code resent!');
   };
 
   return (
-    <AuthLayout title="Verify your email">
-      <div className="flex flex-col items-center justify-center space-y-6 p-6">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-workwise-lightBlue">
-          <CheckCircle className="h-8 w-8 text-workwise-blue" />
+    <div className="min-h-screen auth-gradient">
+      <div className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
+        <div className="mb-6">
+          <Logo />
         </div>
         
-        <div className="text-center">
-          <h3 className="text-xl font-medium text-workwise-text">
-            Email verification sent
-          </h3>
-          <p className="mt-2 text-workwise-darkGray">
-            We've sent a verification link to <span className="font-medium text-workwise-blue">{email}</span>
-          </p>
-        </div>
-        
-        <div className="w-full space-y-4 pt-4">
-          <Button 
-            onClick={handleContinue}
-            className="workwise-btn-primary w-full"
-          >
-            Continue to dashboard
-          </Button>
+        <div className="w-full max-w-md">
+          <h2 className="mb-2 text-3xl font-bold text-center text-gray-900">
+            We've emailed you a code
+          </h2>
           
-          <Button 
-            variant="outline"
-            className="workwise-btn-secondary w-full"
-            onClick={() => window.location.reload()}
-          >
-            Resend verification email
-          </Button>
+          <p className="mb-2 text-center text-gray-700">
+            To complete your account sign up, enter the code that was sent to:
+          </p>
+          
+          <p className="mb-8 text-center text-xl font-medium">
+            {email}
+          </p>
+          
+          <div className="flex justify-center mb-6">
+            <InputOTP 
+              maxLength={5}
+              value={value}
+              onChange={setValue}
+              render={({ slots }) => (
+                <InputOTPGroup>
+                  {slots.map((slot, index) => (
+                    <InputOTPSlot 
+                      key={index} 
+                      {...slot} 
+                      className="w-16 h-16 text-2xl border-purple-300 rounded-lg"
+                    />
+                  ))}
+                </InputOTPGroup>
+              )}
+            />
+          </div>
+          
+          <div className="space-y-4">
+            <Button 
+              onClick={handleVerify}
+              disabled={value.length !== 5 || isLoading}
+              className="workwise-btn-primary w-full bg-purple-600"
+            >
+              {isLoading ? 'Verifying...' : 'Verify'}
+            </Button>
+            
+            <div className="text-center">
+              <button 
+                type="button"
+                onClick={handleResend}
+                className="text-purple-600 hover:underline"
+              >
+                Didn't receive an email? Resend email
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </AuthLayout>
+    </div>
   );
 };
 
