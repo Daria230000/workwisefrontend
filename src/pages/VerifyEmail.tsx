@@ -53,14 +53,13 @@ const VerifyEmail: React.FC = () => {
             <InputOTP 
               maxLength={5}
               value={value}
-              onChange={setValue}
+              onChange={(value) => setValue(value)}
               render={({ slots }) => (
                 <InputOTPGroup>
                   {slots.map((slot, i) => (
                     <InputOTPSlot 
-                      key={i}
-                      {...slot}
-                      index={i} 
+                      key={i} 
+                      {...slot} 
                       className="w-16 h-16 text-2xl border-purple-300 rounded-lg"
                     />
                   ))}
