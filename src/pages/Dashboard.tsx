@@ -19,7 +19,7 @@ import {
   ResponsiveContainer,
   Tooltip
 } from 'recharts';
-import { Calendar, Filter, ArrowDown, ArrowUp, AlertTriangle } from 'lucide-react';
+import { Calendar, ArrowDown, ArrowUp, AlertTriangle } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const [timeRange, setTimeRange] = useState('30');
@@ -62,14 +62,17 @@ const Dashboard: React.FC = () => {
     taskLoad: 'Medium'
   });
 
-  // Active employees at risk
-  const [riskEmployeeData, setRiskEmployeeData] = useState([
-    { id: 1, name: 'Alice Cooper', department: 'Engineering', risk: 85, trend: 'up', reason: 'Weekend hours increased by 40%' },
-    { id: 2, name: 'Bob Smith', department: 'Design', risk: 78, trend: 'up', reason: 'Consecutive late night work' },
-    { id: 3, name: 'Carol Davis', department: 'Marketing', risk: 67, trend: 'down', reason: 'Multiple deadlines this week' },
-    { id: 4, name: 'Dave Johnson', department: 'Product', risk: 64, trend: 'up', reason: 'Task overload in sprint' },
-    { id: 5, name: 'Eva Williams', department: 'Engineering', risk: 58, trend: 'down', reason: 'Frequent context switching' },
-  ]);
+  // Original employee risk data
+  const originalRiskEmployeeData = [
+    { id: 1, name: 'Alice Cooper', department: 'Engineering', risk: 85, trend: 'up', reason: 'Weekend hours increased by 40%', tool: 'jira' },
+    { id: 2, name: 'Bob Smith', department: 'Design', risk: 78, trend: 'up', reason: 'Consecutive late night work', tool: 'toggl' },
+    { id: 3, name: 'Carol Davis', department: 'Marketing', risk: 67, trend: 'down', reason: 'Multiple deadlines this week', tool: 'slack' },
+    { id: 4, name: 'Dave Johnson', department: 'Product', risk: 64, trend: 'up', reason: 'Task overload in sprint', tool: 'jira' },
+    { id: 5, name: 'Eva Williams', department: 'Engineering', risk: 58, trend: 'down', reason: 'Frequent context switching', tool: 'github' },
+  ];
+  
+  // Active employees at risk (filtered)
+  const [riskEmployeeData, setRiskEmployeeData] = useState(originalRiskEmployeeData);
   
   // Update data based on filters
   useEffect(() => {
@@ -124,15 +127,24 @@ const Dashboard: React.FC = () => {
       });
     }
     
-    // Update filters based on department
+    // Filter employees based on department and tool
+    let filteredEmployees = [...originalRiskEmployeeData];
+    
     if (departmentFilter !== 'all') {
-      const filteredEmployees = riskEmployeeData.filter(
-        employee => employee.department.toLowerCase() === departmentFilter
+      filteredEmployees = filteredEmployees.filter(
+        employee => employee.department.toLowerCase() === departmentFilter.toLowerCase()
       );
-      setRiskEmployeeData(filteredEmployees);
     }
     
-  }, [timeRange, departmentFilter]);
+    if (toolFilter !== 'all') {
+      filteredEmployees = filteredEmployees.filter(
+        employee => employee.tool === toolFilter
+      );
+    }
+    
+    setRiskEmployeeData(filteredEmployees);
+    
+  }, [timeRange, departmentFilter, toolFilter]);
   
   // Update sprint data based on tab
   useEffect(() => {
@@ -180,11 +192,6 @@ const Dashboard: React.FC = () => {
               <SelectItem value="slack">Slack Only</SelectItem>
             </SelectContent>
           </Select>
-          
-          <Button variant="outline" className="flex items-center gap-2">
-            <Filter size={16} />
-            More Filters
-          </Button>
         </div>
       </div>
       
@@ -336,30 +343,38 @@ const Dashboard: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {riskEmployeeData.map((employee) => (
-                  <tr key={employee.id} className="hover:bg-purple-50">
-                    <td className="py-4">{employee.name}</td>
-                    <td className="py-4">{employee.department}</td>
-                    <td className="py-4">
-                      <div className="font-medium text-red-500">{employee.risk}%</div>
-                    </td>
-                    <td className="py-4">
-                      {employee.trend === 'up' ? (
-                        <ArrowUp size={16} className="text-red-500" />
-                      ) : (
-                        <ArrowDown size={16} className="text-green-500" />
-                      )}
-                    </td>
-                    <td className="py-4">{employee.reason}</td>
-                    <td className="py-4">
-                      <Link to={`/employee/${employee.id}`}>
-                        <Button variant="outline" size="sm" className="text-purple-600 border-purple-200">
-                          View Profile
-                        </Button>
-                      </Link>
+                {riskEmployeeData.length > 0 ? (
+                  riskEmployeeData.map((employee) => (
+                    <tr key={employee.id} className="hover:bg-purple-50">
+                      <td className="py-4">{employee.name}</td>
+                      <td className="py-4">{employee.department}</td>
+                      <td className="py-4">
+                        <div className="font-medium text-red-500">{employee.risk}%</div>
+                      </td>
+                      <td className="py-4">
+                        {employee.trend === 'up' ? (
+                          <ArrowUp size={16} className="text-red-500" />
+                        ) : (
+                          <ArrowDown size={16} className="text-green-500" />
+                        )}
+                      </td>
+                      <td className="py-4">{employee.reason}</td>
+                      <td className="py-4">
+                        <Link to={`/employee/${employee.id}`}>
+                          <Button variant="outline" size="sm" className="text-purple-600 border-purple-200">
+                            View Profile
+                          </Button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="py-8 text-center text-gray-500">
+                      No employees match the current filters
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

@@ -24,6 +24,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import AllNotificationsDialog from './AllNotificationsDialog';
+import EditProfileDialog from './EditProfileDialog';
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -59,6 +61,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showProfileDialog, setShowProfileDialog] = useState(false);
+  const [showAllNotificationsDialog, setShowAllNotificationsDialog] = useState(false);
+  const [showEditProfileDialog, setShowEditProfileDialog] = useState(false);
   
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
@@ -180,7 +184,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     ))}
                   </div>
                   <div className="p-2 border-t border-gray-100 text-center">
-                    <Button variant="ghost" className="w-full text-sm text-purple-600">
+                    <Button 
+                      variant="ghost" 
+                      className="w-full text-sm text-purple-600"
+                      onClick={() => setShowAllNotificationsDialog(true)}
+                    >
                       View all notifications
                     </Button>
                   </div>
@@ -242,13 +250,31 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </div>
             
             <div className="w-full mt-6">
-              <Button className="w-full bg-purple-500 hover:bg-purple-600">
+              <Button 
+                className="w-full bg-purple-500 hover:bg-purple-600"
+                onClick={() => {
+                  setShowProfileDialog(false);
+                  setShowEditProfileDialog(true);
+                }}
+              >
                 Edit Profile
               </Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* All Notifications Dialog */}
+      <AllNotificationsDialog 
+        open={showAllNotificationsDialog} 
+        onOpenChange={setShowAllNotificationsDialog} 
+      />
+
+      {/* Edit Profile Dialog */}
+      <EditProfileDialog
+        open={showEditProfileDialog}
+        onOpenChange={setShowEditProfileDialog}
+      />
     </div>
   );
 };

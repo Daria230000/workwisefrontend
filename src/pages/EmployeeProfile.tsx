@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
@@ -30,6 +31,11 @@ import {
   Check,
   ArrowUp
 } from 'lucide-react';
+import CoachingPlanDialog from '../components/CoachingPlanDialog';
+import PeerSupportDialog from '../components/PeerSupportDialog';
+import ScheduleMeetingDialog from '../components/ScheduleMeetingDialog';
+import HrReviewDialog from '../components/HrReviewDialog';
+import ScheduleReviewDialog from '../components/ScheduleReviewDialog';
 
 // Mock data
 const employeeData = {
@@ -86,6 +92,11 @@ const absenceData = [
 
 const EmployeeProfile: React.FC = () => {
   const { id } = useParams<{id: string}>();
+  const [openCoachingPlan, setOpenCoachingPlan] = useState(false);
+  const [openPeerSupport, setOpenPeerSupport] = useState(false);
+  const [openScheduleMeeting, setOpenScheduleMeeting] = useState(false);
+  const [openHrReview, setOpenHrReview] = useState(false);
+  const [openScheduleReview, setOpenScheduleReview] = useState(false);
   
   return (
     <DashboardLayout>
@@ -98,11 +109,6 @@ const EmployeeProfile: React.FC = () => {
             <h1 className="text-2xl font-bold">{employeeData.name}</h1>
             <p className="text-gray-600">{employeeData.title} • {employeeData.department}</p>
           </div>
-        </div>
-        
-        <div className="flex gap-2">
-          <Button variant="outline">Message</Button>
-          <Button className="bg-purple-600 hover:bg-purple-700">Schedule Meeting</Button>
         </div>
       </div>
       
@@ -210,8 +216,8 @@ const EmployeeProfile: React.FC = () => {
                 <CardDescription>Based on activity patterns and historical data</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center mb-6">
-                  <div className="w-32 h-32 relative">
+                <div className="flex items-start mb-6">
+                  <div className="w-32 h-32 relative flex-shrink-0">
                     <svg viewBox="0 0 36 36" className="w-full h-full">
                       <path
                         d="M18 2.0845
@@ -307,10 +313,6 @@ const EmployeeProfile: React.FC = () => {
                     </div>
                     <p className="ml-3 text-sm">Encourage taking a day off or using PTO</p>
                   </div>
-                </div>
-                
-                <div className="mt-6">
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700">Create Intervention Plan</Button>
                 </div>
               </CardContent>
             </Card>
@@ -459,10 +461,6 @@ const EmployeeProfile: React.FC = () => {
                     <span>Dec 31, 2023</span>
                   </div>
                 </div>
-                
-                <div className="mt-6">
-                  <Button variant="outline" className="w-full">Request Time Off</Button>
-                </div>
               </CardContent>
             </Card>
           </div>
@@ -511,22 +509,34 @@ const EmployeeProfile: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Button className="h-auto py-4 flex flex-col items-center justify-center bg-purple-600 hover:bg-purple-700">
+                  <Button 
+                    className="h-auto py-4 flex flex-col items-center justify-center bg-purple-600 hover:bg-purple-700"
+                    onClick={() => setOpenCoachingPlan(true)}
+                  >
                     <User className="h-6 w-6 mb-2" />
                     <span>Create Coaching Plan</span>
                   </Button>
                   
-                  <Button className="h-auto py-4 flex flex-col items-center justify-center bg-purple-600 hover:bg-purple-700">
+                  <Button 
+                    className="h-auto py-4 flex flex-col items-center justify-center bg-purple-600 hover:bg-purple-700"
+                    onClick={() => setOpenPeerSupport(true)}
+                  >
                     <Users className="h-6 w-6 mb-2" />
                     <span>Assign Peer Support</span>
                   </Button>
                   
-                  <Button className="h-auto py-4 flex flex-col items-center justify-center bg-purple-600 hover:bg-purple-700">
+                  <Button 
+                    className="h-auto py-4 flex flex-col items-center justify-center bg-purple-600 hover:bg-purple-700"
+                    onClick={() => setOpenScheduleMeeting(true)}
+                  >
                     <CalendarIcon className="h-6 w-6 mb-2" />
                     <span>Schedule 1:1 Meeting</span>
                   </Button>
                   
-                  <Button className="h-auto py-4 flex flex-col items-center justify-center bg-purple-600 hover:bg-purple-700">
+                  <Button 
+                    className="h-auto py-4 flex flex-col items-center justify-center bg-purple-600 hover:bg-purple-700"
+                    onClick={() => setOpenHrReview(true)}
+                  >
                     <AlertTriangle className="h-6 w-6 mb-2" />
                     <span>Request HR Review</span>
                   </Button>
@@ -559,10 +569,6 @@ const EmployeeProfile: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="mt-6">
-                    <Button className="w-full">Create Intervention Plan</Button>
-                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -587,13 +593,26 @@ const EmployeeProfile: React.FC = () => {
                 </div>
                 
                 <div className="mt-6">
-                  <Button variant="outline" className="w-full">Schedule New Review</Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => setOpenScheduleReview(true)}
+                  >
+                    Schedule New Review
+                  </Button>
                 </div>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
       </Tabs>
+      
+      {/* Dialog Components */}
+      <CoachingPlanDialog open={openCoachingPlan} onOpenChange={setOpenCoachingPlan} employeeName={employeeData.name} />
+      <PeerSupportDialog open={openPeerSupport} onOpenChange={setOpenPeerSupport} employeeName={employeeData.name} />
+      <ScheduleMeetingDialog open={openScheduleMeeting} onOpenChange={setOpenScheduleMeeting} employeeName={employeeData.name} />
+      <HrReviewDialog open={openHrReview} onOpenChange={setOpenHrReview} employeeName={employeeData.name} />
+      <ScheduleReviewDialog open={openScheduleReview} onOpenChange={setOpenScheduleReview} employeeName={employeeData.name} />
     </DashboardLayout>
   );
 };
