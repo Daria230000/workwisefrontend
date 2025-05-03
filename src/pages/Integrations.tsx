@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -141,6 +140,34 @@ const Integrations: React.FC = () => {
     bambooHR: { status: 'connected' as const, lastSync: 'May 20, 2025' },
   });
   
+  // Available integrations for the marketplace tab
+  const [availableIntegrations, setAvailableIntegrations] = useState([
+    { 
+      id: 'asana',
+      name: 'Asana', 
+      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
+      description: 'Connect your Asana projects to track team workload and task assignments.'
+    },
+    { 
+      id: 'ms-teams',
+      name: 'Microsoft Teams', 
+      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
+      description: 'Track communication patterns and meeting load from Microsoft Teams.'
+    },
+    { 
+      id: 'trello',
+      name: 'Trello', 
+      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
+      description: 'Import cards and board data to analyze project progress and bottlenecks.'
+    },
+    { 
+      id: 'monday',
+      name: 'Monday.com', 
+      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
+      description: 'Connect monday.com boards to analyze task distribution and completion rates.'
+    },
+  ]);
+  
   const handleConnect = (integration: keyof typeof integrations) => {
     if (integration === 'jira') {
       setIsConnectingJira(true);
@@ -204,29 +231,26 @@ const Integrations: React.FC = () => {
     });
   };
   
-  // Available integrations for the marketplace tab
-  const availableIntegrations = [
-    { 
-      name: 'Asana', 
-      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
-      description: 'Connect your Asana projects to track team workload and task assignments.'
-    },
-    { 
-      name: 'Microsoft Teams', 
-      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
-      description: 'Track communication patterns and meeting load from Microsoft Teams.'
-    },
-    { 
-      name: 'Trello', 
-      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
-      description: 'Import cards and board data to analyze project progress and bottlenecks.'
-    },
-    { 
-      name: 'Monday.com', 
-      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
-      description: 'Connect monday.com boards to analyze task distribution and completion rates.'
-    },
-  ];
+  const handleAddIntegration = (integrationId: string) => {
+    // Find the integration to add
+    const integrationToAdd = availableIntegrations.find(integration => integration.id === integrationId);
+    
+    if (!integrationToAdd) return;
+    
+    // Remove from available integrations
+    setAvailableIntegrations(prev => prev.filter(integration => integration.id !== integrationId));
+    
+    // Add to installed integrations (disconnected by default)
+    setIntegrations(prev => ({
+      ...prev,
+      [integrationId]: { status: 'disconnected', lastSync: undefined }
+    }));
+    
+    // Switch to installed tab
+    setActiveTab("installed");
+    
+    toast.success(`${integrationToAdd.name} added to your integrations`);
+  };
 
   return (
     <DashboardLayout>
@@ -259,83 +283,48 @@ const Integrations: React.FC = () => {
         </TabsList>
         <TabsContent value="installed" className="mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <IntegrationCard
-              name="Jira"
-              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-              description="Sync tasks, sprints, and project data to analyze workload distribution."
-              status={integrations.jira.status}
-              lastSync={integrations.jira.lastSync}
-              onConnect={() => handleConnect('jira')}
-              onDisconnect={() => handleDisconnect('jira')}
-              onReconnect={() => handleReconnect('jira')}
-              onSync={() => handleSync('jira')}
-            />
-            
-            <IntegrationCard
-              name="Slack"
-              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-              description="Analyze communication patterns and work hour distribution."
-              status={integrations.slack.status}
-              lastSync={integrations.slack.lastSync}
-              onConnect={() => handleConnect('slack')}
-              onDisconnect={() => handleDisconnect('slack')}
-              onReconnect={() => handleReconnect('slack')}
-              onSync={() => handleSync('slack')}
-            />
-            
-            <IntegrationCard
-              name="Google Calendar"
-              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-              description="Analyze meeting load, focus time, and availability patterns."
-              status={integrations.googleCalendar.status}
-              lastSync={integrations.googleCalendar.lastSync}
-              onConnect={() => handleConnect('googleCalendar')}
-              onDisconnect={() => handleDisconnect('googleCalendar')}
-              onReconnect={() => handleReconnect('googleCalendar')}
-              onSync={() => handleSync('googleCalendar')}
-            />
-            
-            <IntegrationCard
-              name="GitHub"
-              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-              description="Track code contributions, review load, and development activity."
-              status={integrations.github.status}
-              lastSync={integrations.github.lastSync}
-              onConnect={() => handleConnect('github')}
-              onDisconnect={() => handleDisconnect('github')}
-              onReconnect={() => handleReconnect('github')}
-              onSync={() => handleSync('github')}
-            />
-            
-            <IntegrationCard
-              name="Toggl"
-              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-              description="Import time tracking data to analyze work patterns and overtime."
-              status={integrations.toggl.status}
-              lastSync={integrations.toggl.lastSync}
-              onConnect={() => handleConnect('toggl')}
-              onDisconnect={() => handleDisconnect('toggl')}
-              onReconnect={() => handleReconnect('toggl')}
-              onSync={() => handleSync('toggl')}
-            />
-            
-            <IntegrationCard
-              name="BambooHR"
-              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-              description="Sync employee data, PTO requests, and organizational structure."
-              status={integrations.bambooHR.status}
-              lastSync={integrations.bambooHR.lastSync}
-              onConnect={() => handleConnect('bambooHR')}
-              onDisconnect={() => handleDisconnect('bambooHR')}
-              onReconnect={() => handleReconnect('bambooHR')}
-              onSync={() => handleSync('bambooHR')}
-            />
+            {Object.entries(integrations).map(([key, value]) => (
+              <IntegrationCard
+                key={key}
+                name={key.charAt(0).toUpperCase() + key.slice(1)}
+                logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
+                description={
+                  key === 'jira'
+                    ? "Sync tasks, sprints, and project data to analyze workload distribution."
+                    : key === 'slack'
+                    ? "Analyze communication patterns and work hour distribution."
+                    : key === 'googleCalendar'
+                    ? "Analyze meeting load, focus time, and availability patterns."
+                    : key === 'github'
+                    ? "Track code contributions, review load, and development activity."
+                    : key === 'toggl'
+                    ? "Import time tracking data to analyze work patterns and overtime."
+                    : key === 'bambooHR'
+                    ? "Sync employee data, PTO requests, and organizational structure."
+                    : key === 'asana'
+                    ? "Connect your Asana projects to track team workload and task assignments."
+                    : key === 'ms-teams'
+                    ? "Track communication patterns and meeting load from Microsoft Teams."
+                    : key === 'trello'
+                    ? "Import cards and board data to analyze project progress and bottlenecks."
+                    : key === 'monday'
+                    ? "Connect monday.com boards to analyze task distribution and completion rates."
+                    : "Connect and analyze data from this integration."
+                }
+                status={value.status}
+                lastSync={value.lastSync}
+                onConnect={() => handleConnect(key as keyof typeof integrations)}
+                onDisconnect={() => handleDisconnect(key as keyof typeof integrations)}
+                onReconnect={() => handleReconnect(key as keyof typeof integrations)}
+                onSync={() => handleSync(key as keyof typeof integrations)}
+              />
+            ))}
           </div>
         </TabsContent>
         <TabsContent value="marketplace" className="mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableIntegrations.map((integration) => (
-              <Card key={integration.name} className="overflow-hidden">
+              <Card key={integration.id} className="overflow-hidden">
                 <CardHeader className="pb-4">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
@@ -354,7 +343,11 @@ const Integrations: React.FC = () => {
                   </CardDescription>
                 </CardContent>
                 <CardFooter className="bg-gray-50 pt-3 pb-3 border-t">
-                  <Button size="sm" className="w-full bg-purple-600">
+                  <Button 
+                    size="sm" 
+                    className="w-full bg-purple-600"
+                    onClick={() => handleAddIntegration(integration.id)}
+                  >
                     <Plus className="h-4 w-4 mr-2" /> Add Integration
                   </Button>
                 </CardFooter>

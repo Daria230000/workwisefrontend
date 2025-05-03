@@ -1,10 +1,8 @@
-
 import React, { useState } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertTriangle, Clock, UserCheck, User, Calendar, Check, X, Bell, Filter } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from "sonner";
@@ -174,37 +172,6 @@ const Alerts: React.FC = () => {
     <DashboardLayout>
       <div className="mb-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Alerts & Recommendations</h1>
-        <div className="flex space-x-2">
-          <Select value={selectedFilter} onValueChange={setSelectedFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Alerts</SelectItem>
-              <SelectItem value="burnout">Burnout Risk</SelectItem>
-              <SelectItem value="performance">Performance Dips</SelectItem>
-              <SelectItem value="disengagement">Disengagement</SelectItem>
-              <SelectItem value="absenteeism">Absenteeism</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Sort By" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="date">Date (Newest First)</SelectItem>
-              <SelectItem value="severity">Severity (Highest First)</SelectItem>
-              <SelectItem value="department">Department</SelectItem>
-              <SelectItem value="employee">Employee Name</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Button variant="outline" className="flex items-center gap-2 whitespace-nowrap">
-            <Filter size={16} />
-            More Filters
-          </Button>
-        </div>
       </div>
       
       <Tabs defaultValue="alerts" className="mb-6">
@@ -356,11 +323,11 @@ const Alerts: React.FC = () => {
                   >
                     {recommendation.implemented ? (
                       <>
-                        <Check className="mr-2 h-4 w-4" />
-                        Implemented
+                        <Check className="mr-1 h-4 w-4" />
+                        <span className="text-sm">Implemented</span>
                       </>
                     ) : (
-                      'Implement Recommendation'
+                      <span className="text-sm">Implement</span>
                     )}
                   </Button>
                 </CardFooter>

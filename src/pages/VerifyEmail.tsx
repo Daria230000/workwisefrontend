@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
@@ -14,7 +14,7 @@ const VerifyEmail: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (resendTimer > 0) {
       const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
       return () => clearTimeout(timer);
@@ -70,6 +70,7 @@ const VerifyEmail: React.FC = () => {
                       key={i} 
                       {...slot} 
                       className="w-16 h-16 text-2xl border-purple-300 rounded-lg"
+                      inputMode="numeric"
                     />
                   ))}
                 </InputOTPGroup>
