@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
@@ -10,7 +9,8 @@ import { Button } from '@/components/ui/button';
 interface ViewTeamDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  team: {
+  teamName?: string; // Make teamName optional to match usage in Employees.tsx
+  team?: {
     name: string;
     members: TeamMember[];
     metrics?: TeamMetrics;
@@ -36,8 +36,20 @@ interface TeamMetrics {
 const ViewTeamDialog: React.FC<ViewTeamDialogProps> = ({ 
   open, 
   onOpenChange,
+  teamName,
   team
 }) => {
+  // Use provided team or create a mock team using teamName
+  const displayTeam = team || {
+    name: teamName || 'Unknown Team',
+    members: [
+      { id: 1, name: 'John Smith', role: 'Senior Developer', risk: 25, performance: 85, trend: 'up' },
+      { id: 2, name: 'Sarah Johnson', role: 'UI/UX Designer', risk: 15, performance: 90, trend: 'up' },
+      { id: 3, name: 'Michael Brown', role: 'Marketing Specialist', risk: 45, performance: 75, trend: 'down' },
+      { id: 4, name: 'Emily Davis', role: 'Frontend Developer', risk: 60, performance: 65, trend: 'flat' },
+    ]
+  };
+  
   const getStatusColor = (value: number) => {
     if (value > 75) return 'text-green-600';
     if (value > 50) return 'text-yellow-600';
@@ -56,7 +68,7 @@ const ViewTeamDialog: React.FC<ViewTeamDialogProps> = ({
     return 'bg-red-500';
   };
 
-  const metrics = team.metrics || {
+  const metrics = displayTeam.metrics || {
     burnoutRisk: 35,
     performance: 78,
     collaboration: 82,
@@ -69,7 +81,7 @@ const ViewTeamDialog: React.FC<ViewTeamDialogProps> = ({
         <DialogHeader>
           <DialogTitle className="text-xl flex items-center">
             <Users className="mr-2 h-5 w-5" />
-            {team.name} Team
+            {displayTeam.name} Team
           </DialogTitle>
         </DialogHeader>
         
@@ -131,7 +143,7 @@ const ViewTeamDialog: React.FC<ViewTeamDialogProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {team.members.map((member) => (
+                {displayTeam.members.map((member) => (
                   <tr key={member.id} className="hover:bg-gray-50">
                     <td className="py-3">{member.name}</td>
                     <td className="py-3">{member.role}</td>

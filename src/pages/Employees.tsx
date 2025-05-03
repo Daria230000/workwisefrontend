@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
@@ -76,6 +75,12 @@ const Employees: React.FC = () => {
     setFilteredEmployees(mockEmployees);
     setFilteredTeams(mockTeams);
   }, []);
+  
+  // Add a handler for adding an employee
+  const handleAddEmployee = (newEmployee: Employee) => {
+    setEmployees(prevEmployees => [newEmployee, ...prevEmployees]);
+    setFilteredEmployees(prevFiltered => [newEmployee, ...prevFiltered]);
+  };
   
   // Apply filters to employees
   useEffect(() => {
@@ -368,7 +373,11 @@ const Employees: React.FC = () => {
         </CardContent>
       </Card>
       
-      <AddEmployeeDialog open={addEmployeeOpen} onOpenChange={setAddEmployeeOpen} />
+      <AddEmployeeDialog 
+        open={addEmployeeOpen} 
+        onOpenChange={setAddEmployeeOpen} 
+        onAddEmployee={handleAddEmployee} 
+      />
       <ViewTeamDialog 
         open={viewTeamOpen} 
         onOpenChange={setViewTeamOpen} 

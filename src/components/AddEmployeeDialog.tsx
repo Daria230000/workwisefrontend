@@ -11,13 +11,13 @@ import { toast } from 'sonner';
 interface AddEmployeeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddEmployee: (employee: any) => void;
+  onAddEmployee?: (employee: any) => void; // Make optional to match usage in Employees.tsx
 }
 
 const AddEmployeeDialog: React.FC<AddEmployeeDialogProps> = ({ 
   open, 
   onOpenChange,
-  onAddEmployee
+  onAddEmployee = () => {} // Provide default empty function
 }) => {
   const [formData, setFormData] = useState({
     firstName: '',

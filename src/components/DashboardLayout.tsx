@@ -17,6 +17,13 @@ import Logo from './Logo';
 import { Button } from '@/components/ui/button';
 import { toast } from "sonner";
 import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { 
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
