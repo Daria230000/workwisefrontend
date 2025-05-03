@@ -278,7 +278,7 @@ const Dashboard: React.FC = () => {
                     fill="#8269FF20" 
                     strokeWidth={2}
                   />
-                </LineChart>
+                </AreaChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
