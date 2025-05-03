@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { toast } from "sonner";
 import Logo from '../components/Logo';
 
 const VerifyEmail: React.FC = () => {
@@ -18,13 +19,14 @@ const VerifyEmail: React.FC = () => {
     // For demo purposes
     setTimeout(() => {
       setIsLoading(false);
+      toast.success("Email verified successfully!");
       navigate('/dashboard');
     }, 1500);
   };
 
   const handleResend = () => {
     // For demo purposes
-    alert('Verification code resent!');
+    toast.success("Verification code resent!");
   };
 
   return (

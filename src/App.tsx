@@ -15,6 +15,8 @@ import EmployeeProfile from "./pages/EmployeeProfile";
 import Reports from "./pages/Reports";
 import Alerts from "./pages/Alerts";
 import Settings from "./pages/Settings";
+import Integrations from "./pages/Integrations";
+import AIInsights from "./pages/AIInsights";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +38,8 @@ const App = () => (
           <Route path="/employee/:id" element={<EmployeeProfile />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/alerts" element={<Alerts />} />
+          <Route path="/integrations" element={<Integrations />} />
+          <Route path="/ai-insights" element={<AIInsights />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

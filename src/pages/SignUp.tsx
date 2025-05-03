@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User, Mail, Lock, Building, Facebook, Instagram, Linkedin } from 'lucide-react';
+import { toast } from "sonner";
 import Logo from '../components/Logo';
 
 const SignUp: React.FC = () => {
@@ -23,6 +24,7 @@ const SignUp: React.FC = () => {
     // For demo purposes, we'll just navigate to the verify page
     setTimeout(() => {
       setIsLoading(false);
+      toast.success("Account created! Check your email for verification");
       navigate('/verify', { state: { email } });
     }, 1500);
   };
@@ -40,68 +42,52 @@ const SignUp: React.FC = () => {
           </h2>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <div className="relative">
-                <Input
-                  type="text"
-                  value={organizationName}
-                  onChange={(e) => setOrganizationName(e.target.value)}
-                  placeholder="Organization Name"
-                  className="workwise-input pl-10"
-                  required
-                />
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                  <Building size={18} />
-                </div>
-              </div>
+            <div className="relative">
+              <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+              <Input
+                type="text"
+                value={organizationName}
+                onChange={(e) => setOrganizationName(e.target.value)}
+                placeholder="Organization Name"
+                className="workwise-input pl-10"
+                required
+              />
             </div>
 
-            <div>
-              <div className="relative">
-                <Input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Admin Name"
-                  className="workwise-input pl-10"
-                  required
-                />
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                  <User size={18} />
-                </div>
-              </div>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Admin Name"
+                className="workwise-input pl-10"
+                required
+              />
             </div>
 
-            <div>
-              <div className="relative">
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email"
-                  className="workwise-input pl-10"
-                  required
-                />
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                  <Mail size={18} />
-                </div>
-              </div>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className="workwise-input pl-10"
+                required
+              />
             </div>
 
-            <div>
-              <div className="relative">
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  className="workwise-input pl-10"
-                  required
-                />
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                  <Lock size={18} />
-                </div>
-              </div>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="workwise-input pl-10"
+                required
+              />
             </div>
 
             <div>

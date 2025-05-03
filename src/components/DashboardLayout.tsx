@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
@@ -9,10 +9,13 @@ import {
   Settings, 
   Menu, 
   X,
-  LogOut
+  LogOut,
+  Brain,
+  Link as LinkIcon
 } from 'lucide-react';
 import Logo from './Logo';
 import { Button } from '@/components/ui/button';
+import { toast } from "sonner";
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -45,6 +48,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
   const navItems = [
@@ -52,8 +56,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     { icon: Users, label: 'Employees', href: '/employees' },
     { icon: BarChart2, label: 'Reports', href: '/reports' },
     { icon: Bell, label: 'Alerts', href: '/alerts' },
+    { icon: LinkIcon, label: 'Integrations', href: '/integrations' },
+    { icon: Brain, label: 'AI Insights', href: '/ai-insights' },
     { icon: Settings, label: 'Settings', href: '/settings' },
   ];
+
+  const handleSignOut = () => {
+    toast.success("Signed out successfully");
+    navigate('/sign-in');
+  };
 
   return (
     <div className="flex h-screen bg-purple-50">
@@ -67,7 +78,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-purple-600 transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-purple-700 transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -78,7 +89,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               variant="ghost"
               size="icon"
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-white hover:bg-purple-700"
+              className="lg:hidden text-white hover:bg-purple-800"
             >
               <X className="h-6 w-6" />
             </Button>
@@ -98,16 +109,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </nav>
           </div>
           
-          <div className="border-t border-purple-500 p-4">
-            <Link to="/sign-in">
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start text-white hover:bg-purple-700 hover:text-white"
-              >
-                <LogOut className="mr-2 h-5 w-5" />
-                Sign out
-              </Button>
-            </Link>
+          <div className="border-t border-purple-600 p-4">
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-white hover:bg-purple-800 hover:text-white"
+              onClick={handleSignOut}
+            >
+              <LogOut className="mr-2 h-5 w-5" />
+              Sign out
+            </Button>
           </div>
         </div>
       </aside>
