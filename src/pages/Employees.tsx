@@ -1,342 +1,379 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import AddEmployeeDialog from '../components/AddEmployeeDialog';
+import ViewTeamDialog from '../components/ViewTeamDialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Search, Filter, AlertTriangle, ArrowUp, ArrowDown } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Search, UserPlus, Users, ArrowUpDown, Eye } from 'lucide-react';
 
-const employeeData = [
-  {
-    id: '1',
-    name: 'Alice Cooper',
-    title: 'Senior Frontend Developer',
-    department: 'Engineering',
-    team: 'Web Team',
-    manager: 'Jane Smith',
-    location: 'New York',
-    burnoutRisk: 85,
-    trend: 'up',
-  },
-  {
-    id: '2',
-    name: 'Bob Smith',
-    title: 'UX Designer',
-    department: 'Design',
-    team: 'Mobile Team',
-    manager: 'Jane Smith',
-    location: 'San Francisco',
-    burnoutRisk: 78,
-    trend: 'up',
-  },
-  {
-    id: '3',
-    name: 'Carol Davis',
-    title: 'Marketing Specialist',
-    department: 'Marketing',
-    team: 'Growth Team',
-    manager: 'David Johnson',
-    location: 'Chicago',
-    burnoutRisk: 67,
-    trend: 'down',
-  },
-  {
-    id: '4',
-    name: 'Dave Johnson',
-    title: 'Product Manager',
-    department: 'Product',
-    team: 'Mobile Team',
-    manager: 'Michael Brown',
-    location: 'Austin',
-    burnoutRisk: 64,
-    trend: 'up',
-  },
-  {
-    id: '5',
-    name: 'Eva Williams',
-    title: 'Backend Developer',
-    department: 'Engineering',
-    team: 'API Team',
-    manager: 'Jane Smith',
-    location: 'Boston',
-    burnoutRisk: 58,
-    trend: 'down',
-  },
-  {
-    id: '6',
-    name: 'Frank Miller',
-    title: 'QA Engineer',
-    department: 'Engineering',
-    team: 'QA Team',
-    manager: 'Alice Cooper',
-    location: 'Denver',
-    burnoutRisk: 45,
-    trend: 'down',
-  },
-  {
-    id: '7',
-    name: 'Grace Lee',
-    title: 'DevOps Engineer',
-    department: 'Engineering',
-    team: 'Infra Team',
-    manager: 'Alice Cooper',
-    location: 'Seattle',
-    burnoutRisk: 42,
-    trend: 'stable',
-  },
-  {
-    id: '8',
-    name: 'Hank Wilson',
-    title: 'Sales Manager',
-    department: 'Sales',
-    team: 'Enterprise Team',
-    manager: 'Irene Garcia',
-    location: 'Miami',
-    burnoutRisk: 37,
-    trend: 'up',
-  },
-];
+interface Employee {
+  id: number;
+  name: string;
+  department: string;
+  role: string;
+  status: 'active' | 'vacation' | 'sick';
+  riskScore: number;
+}
 
-const teamData = [
-  { name: 'Web Team', members: 8, avgBurnoutRisk: 63, department: 'Engineering' },
-  { name: 'Mobile Team', members: 6, avgBurnoutRisk: 72, department: 'Engineering' },
-  { name: 'API Team', members: 5, avgBurnoutRisk: 58, department: 'Engineering' },
-  { name: 'QA Team', members: 4, avgBurnoutRisk: 45, department: 'Engineering' },
-  { name: 'Growth Team', members: 7, avgBurnoutRisk: 52, department: 'Marketing' },
-  { name: 'Enterprise Team', members: 5, avgBurnoutRisk: 48, department: 'Sales' },
-  { name: 'Infra Team', members: 4, avgBurnoutRisk: 61, department: 'Engineering' },
-];
+interface Team {
+  id: number;
+  name: string;
+  department: string;
+  memberCount: number;
+  manager: string;
+  riskScore: number;
+}
 
 const Employees: React.FC = () => {
+  const navigate = useNavigate();
+  const [view, setView] = useState<'employees' | 'teams'>('employees');
   const [searchQuery, setSearchQuery] = useState('');
-  const [departmentFilter, setDepartmentFilter] = useState('all');
-  const [teamFilter, setTeamFilter] = useState('all');
-  const [riskFilter, setRiskFilter] = useState('all');
+  const [departmentFilter, setDepartmentFilter] = useState<string>('all');
+  const [riskFilter, setRiskFilter] = useState<string>('all');
   
-  const filteredEmployees = employeeData.filter(employee => {
-    const matchesSearch = employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         employee.title.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesDepartment = departmentFilter === 'all' || employee.department === departmentFilter;
-    const matchesTeam = teamFilter === 'all' || employee.team === teamFilter;
-    
-    let matchesRisk = true;
-    if (riskFilter === 'high') matchesRisk = employee.burnoutRisk >= 70;
-    else if (riskFilter === 'medium') matchesRisk = employee.burnoutRisk >= 50 && employee.burnoutRisk < 70;
-    else if (riskFilter === 'low') matchesRisk = employee.burnoutRisk < 50;
-    
-    return matchesSearch && matchesDepartment && matchesTeam && matchesRisk;
-  });
+  // Modal states
+  const [addEmployeeOpen, setAddEmployeeOpen] = useState(false);
+  const [viewTeamOpen, setViewTeamOpen] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState('');
   
+  // Employee and team data
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
+  const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
+  
+  // Mock data
+  useEffect(() => {
+    const mockEmployees: Employee[] = [
+      { id: 1, name: 'John Smith', department: 'Engineering', role: 'Senior Developer', status: 'active', riskScore: 25 },
+      { id: 2, name: 'Sarah Johnson', department: 'Design', role: 'UI/UX Designer', status: 'active', riskScore: 15 },
+      { id: 3, name: 'Michael Brown', department: 'Marketing', role: 'Marketing Specialist', status: 'vacation', riskScore: 5 },
+      { id: 4, name: 'Emily Davis', department: 'Engineering', role: 'Frontend Developer', status: 'active', riskScore: 78 },
+      { id: 5, name: 'David Wilson', department: 'Product', role: 'Product Manager', status: 'active', riskScore: 45 },
+      { id: 6, name: 'Jessica Taylor', department: 'Design', role: 'Graphic Designer', status: 'sick', riskScore: 30 },
+      { id: 7, name: 'Robert Miller', department: 'Engineering', role: 'DevOps Engineer', status: 'active', riskScore: 62 },
+      { id: 8, name: 'Amanda Thomas', department: 'HR', role: 'HR Manager', status: 'active', riskScore: 22 },
+      { id: 9, name: 'Daniel Anderson', department: 'Marketing', role: 'Content Writer', status: 'vacation', riskScore: 18 },
+      { id: 10, name: 'Lisa Martinez', department: 'Engineering', role: 'QA Engineer', status: 'active', riskScore: 55 },
+    ];
+    
+    const mockTeams: Team[] = [
+      { id: 1, name: 'Frontend', department: 'Engineering', memberCount: 8, manager: 'John Smith', riskScore: 65 },
+      { id: 2, name: 'Backend', department: 'Engineering', memberCount: 12, manager: 'Robert Miller', riskScore: 48 },
+      { id: 3, name: 'Design', department: 'Design', memberCount: 6, manager: 'Sarah Johnson', riskScore: 25 },
+      { id: 4, name: 'Marketing', department: 'Marketing', memberCount: 5, manager: 'Michael Brown', riskScore: 18 },
+      { id: 5, name: 'Product', department: 'Product', memberCount: 4, manager: 'David Wilson', riskScore: 42 },
+      { id: 6, name: 'QA', department: 'Engineering', memberCount: 7, manager: 'Lisa Martinez', riskScore: 37 },
+    ];
+    
+    setEmployees(mockEmployees);
+    setTeams(mockTeams);
+    setFilteredEmployees(mockEmployees);
+    setFilteredTeams(mockTeams);
+  }, []);
+  
+  // Apply filters to employees
+  useEffect(() => {
+    let result = [...employees];
+    
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(employee => 
+        employee.name.toLowerCase().includes(query) ||
+        employee.role.toLowerCase().includes(query) ||
+        employee.department.toLowerCase().includes(query)
+      );
+    }
+    
+    // Department filter
+    if (departmentFilter !== 'all') {
+      result = result.filter(employee => 
+        employee.department.toLowerCase() === departmentFilter.toLowerCase()
+      );
+    }
+    
+    // Risk filter
+    if (riskFilter !== 'all') {
+      switch (riskFilter) {
+        case 'low':
+          result = result.filter(employee => employee.riskScore < 30);
+          break;
+        case 'medium':
+          result = result.filter(employee => employee.riskScore >= 30 && employee.riskScore < 70);
+          break;
+        case 'high':
+          result = result.filter(employee => employee.riskScore >= 70);
+          break;
+      }
+    }
+    
+    setFilteredEmployees(result);
+  }, [searchQuery, departmentFilter, riskFilter, employees]);
+  
+  // Apply filters to teams
+  useEffect(() => {
+    let result = [...teams];
+    
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(team => 
+        team.name.toLowerCase().includes(query) ||
+        team.department.toLowerCase().includes(query) ||
+        team.manager.toLowerCase().includes(query)
+      );
+    }
+    
+    // Department filter
+    if (departmentFilter !== 'all') {
+      result = result.filter(team => 
+        team.department.toLowerCase() === departmentFilter.toLowerCase()
+      );
+    }
+    
+    // Risk filter
+    if (riskFilter !== 'all') {
+      switch (riskFilter) {
+        case 'low':
+          result = result.filter(team => team.riskScore < 30);
+          break;
+        case 'medium':
+          result = result.filter(team => team.riskScore >= 30 && team.riskScore < 70);
+          break;
+        case 'high':
+          result = result.filter(team => team.riskScore >= 70);
+          break;
+      }
+    }
+    
+    setFilteredTeams(result);
+  }, [searchQuery, departmentFilter, riskFilter, teams]);
+  
+  const viewTeam = (teamName: string) => {
+    setSelectedTeam(teamName);
+    setViewTeamOpen(true);
+  };
+  
+  const viewEmployee = (id: number) => {
+    navigate(`/employee/${id}`);
+  };
+  
+  const getRiskBadge = (score: number) => {
+    if (score >= 70) {
+      return <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200">High Risk</Badge>;
+    } else if (score >= 30) {
+      return <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">Medium Risk</Badge>;
+    } else {
+      return <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">Low Risk</Badge>;
+    }
+  };
+  
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">Active</Badge>;
+      case 'vacation':
+        return <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">Vacation</Badge>;
+      case 'sick':
+        return <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-200">Sick</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
   return (
     <DashboardLayout>
-      <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Employees</h1>
-        <Button className="bg-purple-600 hover:bg-purple-700">Add Employee</Button>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Employees</h1>
+          <p className="text-sm text-gray-500">Manage your employees and teams</p>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button 
+            className="bg-purple-500 hover:bg-purple-600"
+            onClick={() => setAddEmployeeOpen(true)}
+          >
+            <UserPlus className="mr-2 h-4 w-4" />
+            Add Employee
+          </Button>
+        </div>
       </div>
       
-      <Tabs defaultValue="employees" className="mb-6">
-        <TabsList className="mb-6">
-          <TabsTrigger value="employees">Employees</TabsTrigger>
-          <TabsTrigger value="teams">Teams</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="employees">
-          <Card className="mb-6">
-            <CardContent className="pt-6">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                  <Input
-                    placeholder="Search by name or position..."
-                    className="pl-10"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-                    <SelectTrigger className="w-[160px]">
-                      <SelectValue placeholder="Department" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Departments</SelectItem>
-                      <SelectItem value="Engineering">Engineering</SelectItem>
-                      <SelectItem value="Design">Design</SelectItem>
-                      <SelectItem value="Marketing">Marketing</SelectItem>
-                      <SelectItem value="Product">Product</SelectItem>
-                      <SelectItem value="Sales">Sales</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  
-                  <Select value={teamFilter} onValueChange={setTeamFilter}>
-                    <SelectTrigger className="w-[160px]">
-                      <SelectValue placeholder="Team" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Teams</SelectItem>
-                      <SelectItem value="Web Team">Web Team</SelectItem>
-                      <SelectItem value="Mobile Team">Mobile Team</SelectItem>
-                      <SelectItem value="API Team">API Team</SelectItem>
-                      <SelectItem value="QA Team">QA Team</SelectItem>
-                      <SelectItem value="Growth Team">Growth Team</SelectItem>
-                      <SelectItem value="Enterprise Team">Enterprise Team</SelectItem>
-                      <SelectItem value="Infra Team">Infra Team</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  
-                  <Select value={riskFilter} onValueChange={setRiskFilter}>
-                    <SelectTrigger className="w-[160px]">
-                      <SelectValue placeholder="Risk Level" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Risk Levels</SelectItem>
-                      <SelectItem value="high">High Risk (70%+)</SelectItem>
-                      <SelectItem value="medium">Medium Risk (50-69%)</SelectItem>
-                      <SelectItem value="low">Low Risk (0-49%)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+      <Card>
+        <CardHeader className="pb-2">
+          <div className="flex flex-col sm:flex-row justify-between gap-2">
+            <div className="flex gap-2">
+              <Button 
+                variant={view === 'employees' ? 'default' : 'outline'}
+                className={view === 'employees' ? 'bg-purple-500 hover:bg-purple-600' : ''}
+                onClick={() => setView('employees')}
+              >
+                <Users className="mr-2 h-4 w-4" />
+                Employees
+              </Button>
+              <Button 
+                variant={view === 'teams' ? 'default' : 'outline'}
+                className={view === 'teams' ? 'bg-purple-500 hover:bg-purple-600' : ''}
+                onClick={() => setView('teams')}
+              >
+                <Users className="mr-2 h-4 w-4" />
+                Teams
+              </Button>
+            </div>
+            
+            <div className="flex gap-2 mt-2 sm:mt-0">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
               </div>
-            </CardContent>
-          </Card>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="py-3 text-left">Name</th>
-                  <th className="py-3 text-left">Department</th>
-                  <th className="py-3 text-left">Team</th>
-                  <th className="py-3 text-left">Manager</th>
-                  <th className="py-3 text-left">Location</th>
-                  <th className="py-3 text-left">Burnout Risk</th>
-                  <th className="py-3 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {filteredEmployees.map((employee) => (
-                  <tr key={employee.id} className="hover:bg-purple-50">
-                    <td className="py-4">
+              
+              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Department" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Departments</SelectItem>
+                  <SelectItem value="engineering">Engineering</SelectItem>
+                  <SelectItem value="design">Design</SelectItem>
+                  <SelectItem value="marketing">Marketing</SelectItem>
+                  <SelectItem value="product">Product</SelectItem>
+                  <SelectItem value="hr">HR</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select value={riskFilter} onValueChange={setRiskFilter}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Risk Level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Risk Levels</SelectItem>
+                  <SelectItem value="high">High Risk</SelectItem>
+                  <SelectItem value="medium">Medium Risk</SelectItem>
+                  <SelectItem value="low">Low Risk</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6">
+          {view === 'employees' ? (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="pb-3 text-left">
                       <div className="flex items-center">
-                        <div className="h-9 w-9 rounded-full bg-purple-100 flex items-center justify-center text-sm font-semibold text-purple-700 mr-3">
-                          {employee.name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        <div>
-                          <p className="font-medium">{employee.name}</p>
-                          <p className="text-sm text-gray-500">{employee.title}</p>
-                        </div>
+                        Name
+                        <ArrowUpDown className="ml-1 h-4 w-4" />
                       </div>
-                    </td>
-                    <td className="py-4">{employee.department}</td>
-                    <td className="py-4">{employee.team}</td>
-                    <td className="py-4">{employee.manager}</td>
-                    <td className="py-4">{employee.location}</td>
-                    <td className="py-4">
-                      <div className="flex items-center">
-                        <div className={`font-medium mr-2 ${
-                          employee.burnoutRisk >= 70 ? 'text-red-500' :
-                          employee.burnoutRisk >= 50 ? 'text-orange-500' :
-                          'text-green-500'
-                        }`}>
-                          {employee.burnoutRisk}%
-                        </div>
-                        {employee.trend === 'up' && <ArrowUp size={16} className="text-red-500" />}
-                        {employee.trend === 'down' && <ArrowDown size={16} className="text-green-500" />}
-                      </div>
-                    </td>
-                    <td className="py-4">
-                      <Link to={`/employee/${employee.id}`}>
-                        <Button variant="outline" size="sm" className="text-purple-600 border-purple-200">
+                    </th>
+                    <th className="pb-3 text-left">Department</th>
+                    <th className="pb-3 text-left">Role</th>
+                    <th className="pb-3 text-left">Status</th>
+                    <th className="pb-3 text-left">Risk Level</th>
+                    <th className="pb-3 text-left">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {filteredEmployees.map((employee) => (
+                    <tr key={employee.id} className="hover:bg-purple-50">
+                      <td className="py-4">{employee.name}</td>
+                      <td className="py-4">{employee.department}</td>
+                      <td className="py-4">{employee.role}</td>
+                      <td className="py-4">{getStatusBadge(employee.status)}</td>
+                      <td className="py-4">{getRiskBadge(employee.riskScore)}</td>
+                      <td className="py-4">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => viewEmployee(employee.id)}
+                          className="text-purple-600 hover:text-purple-800"
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
                           View Profile
                         </Button>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            
-            {filteredEmployees.length === 0 && (
-              <div className="py-12 text-center">
-                <p className="text-gray-500">No employees found matching your filters.</p>
-              </div>
-            )}
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="teams">
-          <Card className="mb-6">
-            <CardContent className="pt-6">
-              <div className="flex gap-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                  <Input placeholder="Search teams..." className="pl-10" />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              
+              {filteredEmployees.length === 0 && (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No employees found matching your filters</p>
                 </div>
-                <Select defaultValue="all">
-                  <SelectTrigger className="w-[160px]">
-                    <SelectValue placeholder="Department" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Departments</SelectItem>
-                    <SelectItem value="engineering">Engineering</SelectItem>
-                    <SelectItem value="design">Design</SelectItem>
-                    <SelectItem value="marketing">Marketing</SelectItem>
-                    <SelectItem value="product">Product</SelectItem>
-                    <SelectItem value="sales">Sales</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {teamData.map((team, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <CardTitle>{team.name}</CardTitle>
-                  <CardDescription>{team.department}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-500">Members</span>
-                      <span className="font-medium">{team.members}</span>
-                    </div>
-                    
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-500">Avg. Burnout Risk</span>
-                      <span className={`font-medium ${
-                        team.avgBurnoutRisk >= 70 ? 'text-red-500' :
-                        team.avgBurnoutRisk >= 50 ? 'text-orange-500' :
-                        'text-green-500'
-                      }`}>{team.avgBurnoutRisk}%</span>
-                    </div>
-                    
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-500">Tasks Completed</span>
-                      <span className="font-medium">147</span>
-                    </div>
-                    
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-500">Sick Days</span>
-                      <span className="font-medium">12</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6">
-                    <Button className="w-full bg-purple-600 hover:bg-purple-700">View Team</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+              )}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="pb-3 text-left">
+                      <div className="flex items-center">
+                        Team Name
+                        <ArrowUpDown className="ml-1 h-4 w-4" />
+                      </div>
+                    </th>
+                    <th className="pb-3 text-left">Department</th>
+                    <th className="pb-3 text-left">Members</th>
+                    <th className="pb-3 text-left">Manager</th>
+                    <th className="pb-3 text-left">Risk Level</th>
+                    <th className="pb-3 text-left">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {filteredTeams.map((team) => (
+                    <tr key={team.id} className="hover:bg-purple-50">
+                      <td className="py-4">{team.name} Team</td>
+                      <td className="py-4">{team.department}</td>
+                      <td className="py-4">{team.memberCount} members</td>
+                      <td className="py-4">{team.manager}</td>
+                      <td className="py-4">{getRiskBadge(team.riskScore)}</td>
+                      <td className="py-4">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => viewTeam(team.name)}
+                          className="text-purple-600 hover:text-purple-800"
+                        >
+                          <Users className="h-4 w-4 mr-1" />
+                          View Team
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              
+              {filteredTeams.length === 0 && (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No teams found matching your filters</p>
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+      
+      <AddEmployeeDialog open={addEmployeeOpen} onOpenChange={setAddEmployeeOpen} />
+      <ViewTeamDialog 
+        open={viewTeamOpen} 
+        onOpenChange={setViewTeamOpen} 
+        teamName={selectedTeam} 
+      />
     </DashboardLayout>
   );
 };

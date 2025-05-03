@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
@@ -12,6 +12,14 @@ const VerifyEmail: React.FC = () => {
   const email = location.state?.email || 'email@gmail.com';
   const [value, setValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
 
   const handleVerify = () => {
     setIsLoading(true);
@@ -27,6 +35,7 @@ const VerifyEmail: React.FC = () => {
   const handleResend = () => {
     // For demo purposes
     toast.success("Verification code resent!");
+    setResendTimer(60); // Set a 60-second countdown
   };
 
   return (
@@ -36,7 +45,7 @@ const VerifyEmail: React.FC = () => {
           <Logo />
         </div>
         
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-sm">
           <h2 className="mb-2 text-3xl font-bold text-center text-gray-900">
             We've emailed you a code
           </h2>
@@ -72,7 +81,7 @@ const VerifyEmail: React.FC = () => {
             <Button 
               onClick={handleVerify}
               disabled={value.length !== 5 || isLoading}
-              className="workwise-btn-primary w-full bg-purple-600"
+              className="w-full bg-purple-500 hover:bg-purple-600 h-12 rounded-lg"
             >
               {isLoading ? 'Verifying...' : 'Verify'}
             </Button>
@@ -81,9 +90,12 @@ const VerifyEmail: React.FC = () => {
               <button 
                 type="button"
                 onClick={handleResend}
-                className="text-purple-600 hover:underline"
+                disabled={resendTimer > 0}
+                className={`text-purple-600 hover:underline ${resendTimer > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                Didn't receive an email? Resend email
+                {resendTimer > 0 
+                  ? `Resend code in ${resendTimer}s` 
+                  : "Didn't receive an email? Resend email"}
               </button>
             </div>
           </div>

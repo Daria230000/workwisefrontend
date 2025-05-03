@@ -4,12 +4,14 @@ import DashboardLayout from '../components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, X, RefreshCw, Link as LinkIcon, AlertTriangle, ExternalLink } from 'lucide-react';
+import { Check, X, RefreshCw, Link as LinkIcon, AlertTriangle, ExternalLink, Plus } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
+import { toast } from 'sonner';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface IntegrationCardProps {
   name: string;
@@ -40,7 +42,7 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded flex items-center justify-center bg-purple-100">
-              <img src={logo} alt={name} className="w-6 h-6" />
+              {logo && <img src={logo} alt={name} className="w-6 h-6" />}
             </div>
             <div>
               <CardTitle className="text-lg">{name}</CardTitle>
@@ -125,8 +127,53 @@ const Integrations: React.FC = () => {
   const [isConnectingJira, setIsConnectingJira] = useState(false);
   const [syncProgress, setSyncProgress] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [activeTab, setActiveTab] = useState("installed");
+  const [jiraUrl, setJiraUrl] = useState('');
+  const [apiToken, setApiToken] = useState('');
   
-  const handleSync = () => {
+  // Integration statuses
+  const [integrations, setIntegrations] = useState({
+    jira: { status: 'connected' as const, lastSync: 'Today at 09:45 AM' },
+    slack: { status: 'connected' as const, lastSync: 'Yesterday at 04:20 PM' },
+    googleCalendar: { status: 'error' as const, lastSync: undefined },
+    github: { status: 'disconnected' as const, lastSync: undefined },
+    toggl: { status: 'disconnected' as const, lastSync: undefined },
+    bambooHR: { status: 'connected' as const, lastSync: 'May 20, 2025' },
+  });
+  
+  const handleConnect = (integration: keyof typeof integrations) => {
+    if (integration === 'jira') {
+      setIsConnectingJira(true);
+    } else {
+      toast.success(`${integration} connected successfully`);
+      setIntegrations({
+        ...integrations,
+        [integration]: { status: 'connected', lastSync: 'Just now' }
+      });
+    }
+  };
+  
+  const handleDisconnect = (integration: keyof typeof integrations) => {
+    toast.success(`${integration} disconnected`);
+    setIntegrations({
+      ...integrations,
+      [integration]: { status: 'disconnected', lastSync: undefined }
+    });
+  };
+  
+  const handleReconnect = (integration: keyof typeof integrations) => {
+    if (integration === 'jira') {
+      setIsConnectingJira(true);
+    } else {
+      toast.success(`${integration} reconnected successfully`);
+      setIntegrations({
+        ...integrations,
+        [integration]: { status: 'connected', lastSync: 'Just now' }
+      });
+    }
+  };
+  
+  const handleSync = (integration: keyof typeof integrations) => {
     setIsSyncing(true);
     setSyncProgress(0);
     
@@ -135,6 +182,7 @@ const Integrations: React.FC = () => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsSyncing(false);
+          toast.success(`${integration} synced successfully`);
           return 100;
         }
         return prev + 10;
@@ -142,6 +190,44 @@ const Integrations: React.FC = () => {
     }, 300);
   };
   
+  const handleJiraConnect = () => {
+    if (!jiraUrl || !apiToken) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    
+    setIsConnectingJira(false);
+    handleSync('jira');
+    setIntegrations({
+      ...integrations,
+      jira: { status: 'connected', lastSync: 'Just now' }
+    });
+  };
+  
+  // Available integrations for the marketplace tab
+  const availableIntegrations = [
+    { 
+      name: 'Asana', 
+      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
+      description: 'Connect your Asana projects to track team workload and task assignments.'
+    },
+    { 
+      name: 'Microsoft Teams', 
+      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
+      description: 'Track communication patterns and meeting load from Microsoft Teams.'
+    },
+    { 
+      name: 'Trello', 
+      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
+      description: 'Import cards and board data to analyze project progress and bottlenecks.'
+    },
+    { 
+      name: 'Monday.com', 
+      logo: '/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png', 
+      description: 'Connect monday.com boards to analyze task distribution and completion rates.'
+    },
+  ];
+
   return (
     <DashboardLayout>
       <div className="mb-6">
@@ -166,76 +252,117 @@ const Integrations: React.FC = () => {
         </Card>
       )}
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <IntegrationCard
-          name="Jira"
-          logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-          description="Sync tasks, sprints, and project data to analyze workload distribution."
-          status="connected"
-          lastSync="Today at 09:45 AM"
-          onConnect={() => setIsConnectingJira(true)}
-          onDisconnect={() => alert('Jira disconnected')}
-          onReconnect={() => setIsConnectingJira(true)}
-          onSync={handleSync}
-        />
-        
-        <IntegrationCard
-          name="Slack"
-          logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-          description="Analyze communication patterns and work hour distribution."
-          status="connected"
-          lastSync="Yesterday at 04:20 PM"
-          onConnect={() => alert('Connect Slack')}
-          onDisconnect={() => alert('Slack disconnected')}
-          onReconnect={() => alert('Reconnect Slack')}
-          onSync={handleSync}
-        />
-        
-        <IntegrationCard
-          name="Google Calendar"
-          logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-          description="Analyze meeting load, focus time, and availability patterns."
-          status="error"
-          onConnect={() => alert('Connect Google Calendar')}
-          onDisconnect={() => alert('Google Calendar disconnected')}
-          onReconnect={() => alert('Reconnect Google Calendar')}
-          onSync={handleSync}
-        />
-        
-        <IntegrationCard
-          name="GitHub"
-          logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-          description="Track code contributions, review load, and development activity."
-          status="disconnected"
-          onConnect={() => alert('Connect GitHub')}
-          onDisconnect={() => alert('GitHub disconnected')}
-          onReconnect={() => alert('Reconnect GitHub')}
-          onSync={handleSync}
-        />
-        
-        <IntegrationCard
-          name="Toggl"
-          logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-          description="Import time tracking data to analyze work patterns and overtime."
-          status="disconnected"
-          onConnect={() => alert('Connect Toggl')}
-          onDisconnect={() => alert('Toggl disconnected')}
-          onReconnect={() => alert('Reconnect Toggl')}
-          onSync={handleSync}
-        />
-        
-        <IntegrationCard
-          name="BambooHR"
-          logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
-          description="Sync employee data, PTO requests, and organizational structure."
-          status="connected"
-          lastSync="May 20, 2025"
-          onConnect={() => alert('Connect BambooHR')}
-          onDisconnect={() => alert('BambooHR disconnected')}
-          onReconnect={() => alert('Reconnect BambooHR')}
-          onSync={handleSync}
-        />
-      </div>
+      <Tabs defaultValue="installed" value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <TabsList>
+          <TabsTrigger value="installed">Installed</TabsTrigger>
+          <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
+        </TabsList>
+        <TabsContent value="installed" className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <IntegrationCard
+              name="Jira"
+              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
+              description="Sync tasks, sprints, and project data to analyze workload distribution."
+              status={integrations.jira.status}
+              lastSync={integrations.jira.lastSync}
+              onConnect={() => handleConnect('jira')}
+              onDisconnect={() => handleDisconnect('jira')}
+              onReconnect={() => handleReconnect('jira')}
+              onSync={() => handleSync('jira')}
+            />
+            
+            <IntegrationCard
+              name="Slack"
+              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
+              description="Analyze communication patterns and work hour distribution."
+              status={integrations.slack.status}
+              lastSync={integrations.slack.lastSync}
+              onConnect={() => handleConnect('slack')}
+              onDisconnect={() => handleDisconnect('slack')}
+              onReconnect={() => handleReconnect('slack')}
+              onSync={() => handleSync('slack')}
+            />
+            
+            <IntegrationCard
+              name="Google Calendar"
+              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
+              description="Analyze meeting load, focus time, and availability patterns."
+              status={integrations.googleCalendar.status}
+              lastSync={integrations.googleCalendar.lastSync}
+              onConnect={() => handleConnect('googleCalendar')}
+              onDisconnect={() => handleDisconnect('googleCalendar')}
+              onReconnect={() => handleReconnect('googleCalendar')}
+              onSync={() => handleSync('googleCalendar')}
+            />
+            
+            <IntegrationCard
+              name="GitHub"
+              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
+              description="Track code contributions, review load, and development activity."
+              status={integrations.github.status}
+              lastSync={integrations.github.lastSync}
+              onConnect={() => handleConnect('github')}
+              onDisconnect={() => handleDisconnect('github')}
+              onReconnect={() => handleReconnect('github')}
+              onSync={() => handleSync('github')}
+            />
+            
+            <IntegrationCard
+              name="Toggl"
+              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
+              description="Import time tracking data to analyze work patterns and overtime."
+              status={integrations.toggl.status}
+              lastSync={integrations.toggl.lastSync}
+              onConnect={() => handleConnect('toggl')}
+              onDisconnect={() => handleDisconnect('toggl')}
+              onReconnect={() => handleReconnect('toggl')}
+              onSync={() => handleSync('toggl')}
+            />
+            
+            <IntegrationCard
+              name="BambooHR"
+              logo="/lovable-uploads/c6874a94-3ca9-4ec1-a5ed-ba6852bc868a.png"
+              description="Sync employee data, PTO requests, and organizational structure."
+              status={integrations.bambooHR.status}
+              lastSync={integrations.bambooHR.lastSync}
+              onConnect={() => handleConnect('bambooHR')}
+              onDisconnect={() => handleDisconnect('bambooHR')}
+              onReconnect={() => handleReconnect('bambooHR')}
+              onSync={() => handleSync('bambooHR')}
+            />
+          </div>
+        </TabsContent>
+        <TabsContent value="marketplace" className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {availableIntegrations.map((integration) => (
+              <Card key={integration.name} className="overflow-hidden">
+                <CardHeader className="pb-4">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded flex items-center justify-center bg-purple-100">
+                        {integration.logo && <img src={integration.logo} alt={integration.name} className="w-6 h-6" />}
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg">{integration.name}</CardTitle>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pb-6">
+                  <CardDescription className="mb-4">
+                    {integration.description}
+                  </CardDescription>
+                </CardContent>
+                <CardFooter className="bg-gray-50 pt-3 pb-3 border-t">
+                  <Button size="sm" className="w-full bg-purple-600">
+                    <Plus className="h-4 w-4 mr-2" /> Add Integration
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
       
       <Dialog open={isConnectingJira} onOpenChange={setIsConnectingJira}>
         <DialogContent className="sm:max-w-[425px]">
@@ -254,6 +381,8 @@ const Integrations: React.FC = () => {
                 id="jiraUrl"
                 placeholder="https://your-domain.atlassian.net"
                 className="col-span-4"
+                value={jiraUrl}
+                onChange={(e) => setJiraUrl(e.target.value)}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -265,6 +394,8 @@ const Integrations: React.FC = () => {
                 type="password"
                 placeholder="Enter your API token"
                 className="col-span-4"
+                value={apiToken}
+                onChange={(e) => setApiToken(e.target.value)}
               />
             </div>
             <div className="flex items-center">
@@ -283,10 +414,7 @@ const Integrations: React.FC = () => {
             </Button>
             <Button 
               className="bg-purple-600" 
-              onClick={() => {
-                setIsConnectingJira(false);
-                handleSync();
-              }}
+              onClick={handleJiraConnect}
             >
               Connect
             </Button>

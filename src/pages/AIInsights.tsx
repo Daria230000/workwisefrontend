@@ -182,12 +182,12 @@ const AIInsights: React.FC = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
+        <Card className="h-full">
           <CardHeader>
             <CardTitle>Performance vs. Burnout Risk</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-80">
+            <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={[
@@ -210,7 +210,7 @@ const AIInsights: React.FC = () => {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="h-full">
           <CardHeader>
             <CardTitle>Risk Threshold Analysis</CardTitle>
           </CardHeader>
