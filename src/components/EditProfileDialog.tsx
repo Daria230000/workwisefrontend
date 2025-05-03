@@ -4,8 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { toast } from "sonner";
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
 
 interface EditProfileDialogProps {
   open: boolean;
@@ -13,40 +13,26 @@ interface EditProfileDialogProps {
 }
 
 const EditProfileDialog: React.FC<EditProfileDialogProps> = ({ open, onOpenChange }) => {
-  const [name, setName] = useState('Jane Smith');
-  const [email, setEmail] = useState('jane.smith@workwise.com');
-  const [phone, setPhone] = useState('(555) 123-4567');
-  const [role, setRole] = useState('HR Manager');
-  const [department, setDepartment] = useState('Human Resources');
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [activeTab, setActiveTab] = useState('general');
+  const [formData, setFormData] = useState({
+    firstName: 'Jane',
+    lastName: 'Smith',
+    email: 'jane.smith@workwise.com',
+    role: 'HR Manager',
+    department: 'Human Resources',
+    team: 'Management',
+    bio: 'HR professional with 8+ years of experience in employee relations, performance management, and organizational development.',
+    phone: '(555) 123-4567',
+    location: 'New York, NY'
+  });
 
-  const handleSaveGeneral = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Profile updated successfully!");
-    onOpenChange(false);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleChangePassword = (e: React.FormEvent) => {
+  const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currentPassword) {
-      toast.error("Please enter your current password.");
-      return;
-    }
-    if (!newPassword) {
-      toast.error("Please enter a new password.");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      toast.error("New passwords do not match.");
-      return;
-    }
-    toast.success("Password changed successfully!");
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
+    toast.success('Profile updated successfully!');
     onOpenChange(false);
   };
 
@@ -57,113 +43,135 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({ open, onOpenChang
           <DialogTitle>Edit Profile</DialogTitle>
         </DialogHeader>
         
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="general">General</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
-          </TabsList>
+        <form onSubmit={handleSave} className="space-y-4 py-2">
+          <div className="flex justify-center mb-4">
+            <div className="relative">
+              <div className="h-24 w-24 rounded-full bg-purple-600 text-white flex items-center justify-center text-2xl">
+                JS
+              </div>
+              <Button 
+                type="button" 
+                size="sm" 
+                className="absolute bottom-0 right-0 rounded-full h-8 w-8 p-0 flex items-center justify-center bg-purple-700 hover:bg-purple-800"
+              >
+                +
+              </Button>
+            </div>
+          </div>
           
-          <TabsContent value="general">
-            <form onSubmit={handleSaveGeneral} className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input 
-                  id="name" 
-                  value={name} 
-                  onChange={(e) => setName(e.target.value)} 
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input 
-                  id="phone" 
-                  value={phone} 
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="role">Role</Label>
-                  <Input 
-                    id="role" 
-                    value={role} 
-                    onChange={(e) => setRole(e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="department">Department</Label>
-                  <Input 
-                    id="department" 
-                    value={department} 
-                    onChange={(e) => setDepartment(e.target.value)}
-                  />
-                </div>
-              </div>
-              
-              <DialogFooter className="pt-4">
-                <Button variant="outline" type="button" onClick={() => onOpenChange(false)}>Cancel</Button>
-                <Button type="submit" className="bg-purple-600 hover:bg-purple-700">Save Changes</Button>
-              </DialogFooter>
-            </form>
-          </TabsContent>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input 
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="space-y-1">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input 
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
           
-          <TabsContent value="security">
-            <form onSubmit={handleChangePassword} className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="currentPassword">Current Password</Label>
-                <Input 
-                  id="currentPassword" 
-                  type="password" 
-                  value={currentPassword} 
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
-                <Input 
-                  id="newPassword" 
-                  type="password" 
-                  value={newPassword} 
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                <Input 
-                  id="confirmPassword" 
-                  type="password" 
-                  value={confirmPassword} 
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <DialogFooter className="pt-4">
-                <Button variant="outline" type="button" onClick={() => onOpenChange(false)}>Cancel</Button>
-                <Button type="submit" className="bg-purple-600 hover:bg-purple-700">Change Password</Button>
-              </DialogFooter>
-            </form>
-          </TabsContent>
-        </Tabs>
+          <div className="space-y-1">
+            <Label htmlFor="email">Email</Label>
+            <Input 
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              disabled
+            />
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label htmlFor="role">Role</Label>
+              <Input 
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="space-y-1">
+              <Label htmlFor="department">Department</Label>
+              <Input 
+                id="department"
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label htmlFor="team">Team</Label>
+              <Input 
+                id="team"
+                name="team"
+                value={formData.team}
+                onChange={handleChange}
+              />
+            </div>
+            
+            <div className="space-y-1">
+              <Label htmlFor="location">Location</Label>
+              <Input 
+                id="location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-1">
+            <Label htmlFor="phone">Phone</Label>
+            <Input 
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+          </div>
+          
+          <div className="space-y-1">
+            <Label htmlFor="bio">Bio</Label>
+            <Textarea 
+              id="bio"
+              name="bio"
+              value={formData.bio}
+              onChange={handleChange}
+              className="min-h-[100px]"
+            />
+          </div>
+          
+          <DialogFooter className="pt-4">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

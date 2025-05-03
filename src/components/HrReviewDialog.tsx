@@ -1,11 +1,13 @@
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from "sonner";
+import { Check } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface HrReviewDialogProps {
   open: boolean;
@@ -16,20 +18,27 @@ interface HrReviewDialogProps {
 const HrReviewDialog: React.FC<HrReviewDialogProps> = ({ 
   open, 
   onOpenChange,
-  employeeName
+  employeeName 
 }) => {
-  const [reason, setReason] = useState('');
-  const [urgency, setUrgency] = useState('medium');
-  const [details, setDetails] = useState('');
-  const [includeDocumentation, setIncludeDocumentation] = useState(false);
+  const [formData, setFormData] = useState({
+    reason: '',
+    urgency: 'medium',
+    details: '',
+    requestedAction: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reason) {
-      toast.error("Please select a reason for the HR review.");
-      return;
-    }
-    toast.success("HR review request submitted successfully!");
+    toast.success(`HR review requested for ${employeeName}!`);
     onOpenChange(false);
   };
 
@@ -38,32 +47,36 @@ const HrReviewDialog: React.FC<HrReviewDialogProps> = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Request HR Review</DialogTitle>
-          <DialogDescription>
-            Request an HR review for {employeeName}.
-          </DialogDescription>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-4 py-4">
-          <div className="space-y-2">
-            <label htmlFor="reason" className="text-sm font-medium">Reason for Review</label>
-            <Select value={reason} onValueChange={setReason} required>
+        <form onSubmit={handleSubmit} className="space-y-4 py-2">
+          <div className="space-y-1">
+            <Label htmlFor="reason">Reason for Review</Label>
+            <Select 
+              value={formData.reason} 
+              onValueChange={(value) => handleSelectChange('reason', value)}
+              required
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select reason" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="performance">Performance Concerns</SelectItem>
                 <SelectItem value="burnout">Burnout Risk</SelectItem>
-                <SelectItem value="promotion">Promotion Consideration</SelectItem>
-                <SelectItem value="conflict">Workplace Conflict</SelectItem>
-                <SelectItem value="accommodation">Accommodation Need</SelectItem>
+                <SelectItem value="performance">Performance Concerns</SelectItem>
+                <SelectItem value="conflict">Team Conflict</SelectItem>
+                <SelectItem value="retention">Retention Risk</SelectItem>
+                <SelectItem value="accommodation">Accommodation Request</SelectItem>
                 <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
           
-          <div className="space-y-2">
-            <label htmlFor="urgency" className="text-sm font-medium">Urgency</label>
-            <Select value={urgency} onValueChange={setUrgency}>
+          <div className="space-y-1">
+            <Label htmlFor="urgency">Urgency Level</Label>
+            <Select 
+              value={formData.urgency} 
+              onValueChange={(value) => handleSelectChange('urgency', value)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select urgency" />
               </SelectTrigger>
@@ -71,40 +84,43 @@ const HrReviewDialog: React.FC<HrReviewDialogProps> = ({
                 <SelectItem value="low">Low - Review within 2 weeks</SelectItem>
                 <SelectItem value="medium">Medium - Review within 1 week</SelectItem>
                 <SelectItem value="high">High - Review within 48 hours</SelectItem>
-                <SelectItem value="urgent">Urgent - Immediate review needed</SelectItem>
+                <SelectItem value="urgent">Urgent - Immediate attention needed</SelectItem>
               </SelectContent>
             </Select>
           </div>
           
-          <div className="space-y-2">
-            <label htmlFor="details" className="text-sm font-medium">Details</label>
+          <div className="space-y-1">
+            <Label htmlFor="details">Situation Details</Label>
             <Textarea 
-              id="details" 
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
-              placeholder="Provide detailed information about the situation"
-              className="h-32"
+              name="details"
+              placeholder="Provide context and supporting information"
+              value={formData.details}
+              onChange={handleChange}
+              className="min-h-[100px]"
               required
             />
           </div>
           
-          <div className="flex items-center space-x-2">
-            <Checkbox 
-              id="includeDocumentation" 
-              checked={includeDocumentation}
-              onCheckedChange={() => setIncludeDocumentation(!includeDocumentation)}
+          <div className="space-y-1">
+            <Label htmlFor="requestedAction">Requested Action</Label>
+            <Textarea 
+              name="requestedAction"
+              placeholder="What action would you like HR to take?"
+              value={formData.requestedAction}
+              onChange={handleChange}
+              className="min-h-[80px]"
+              required
             />
-            <label
-              htmlFor="includeDocumentation"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Include previous documentation
-            </label>
           </div>
           
-          <DialogFooter>
-            <Button variant="outline" type="button" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" className="bg-purple-600 hover:bg-purple-700">Submit Request</Button>
+          <DialogFooter className="pt-4">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
+              <Check className="mr-2 h-4 w-4" />
+              Submit Request
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

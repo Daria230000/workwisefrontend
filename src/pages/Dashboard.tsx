@@ -9,8 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   AreaChart,
   Area,
-  LineChart,
-  Line,
   BarChart, 
   Bar, 
   XAxis, 
@@ -23,7 +21,6 @@ import { Calendar, ArrowDown, ArrowUp, AlertTriangle } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const [timeRange, setTimeRange] = useState('30');
-  const [toolFilter, setToolFilter] = useState('all');
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [sprintTab, setSprintTab] = useState('current');
   
@@ -127,7 +124,7 @@ const Dashboard: React.FC = () => {
       });
     }
     
-    // Filter employees based on department and tool
+    // Filter employees based on department only
     let filteredEmployees = [...originalRiskEmployeeData];
     
     if (departmentFilter !== 'all') {
@@ -136,15 +133,9 @@ const Dashboard: React.FC = () => {
       );
     }
     
-    if (toolFilter !== 'all') {
-      filteredEmployees = filteredEmployees.filter(
-        employee => employee.tool === toolFilter
-      );
-    }
-    
     setRiskEmployeeData(filteredEmployees);
     
-  }, [timeRange, departmentFilter, toolFilter]);
+  }, [timeRange, departmentFilter]);
   
   // Update sprint data based on tab
   useEffect(() => {
@@ -177,19 +168,6 @@ const Dashboard: React.FC = () => {
               <SelectItem value="14">Last 14 Days</SelectItem>
               <SelectItem value="30">Last 30 Days</SelectItem>
               <SelectItem value="90">Last 90 Days</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={toolFilter} onValueChange={setToolFilter}>
-            <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Tool Filter" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Tools</SelectItem>
-              <SelectItem value="jira">Jira Only</SelectItem>
-              <SelectItem value="toggl">Toggl Only</SelectItem>
-              <SelectItem value="github">GitHub Only</SelectItem>
-              <SelectItem value="slack">Slack Only</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -293,8 +271,8 @@ const Dashboard: React.FC = () => {
         
         <Card className="col-span-1">
           <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle>Sprint Stress Index</CardTitle>
+            <div className="flex flex-col">
+              <CardTitle className="mb-3">Sprint Stress Index</CardTitle>
               <Tabs value={sprintTab} onValueChange={setSprintTab} className="w-auto">
                 <TabsList>
                   <TabsTrigger value="current">Current Sprint</TabsTrigger>

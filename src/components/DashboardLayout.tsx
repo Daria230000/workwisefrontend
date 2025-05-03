@@ -11,8 +11,7 @@ import {
   X,
   LogOut,
   Brain,
-  Link as LinkIcon,
-  User
+  Link as LinkIcon
 } from 'lucide-react';
 import Logo from './Logo';
 import { Button } from '@/components/ui/button';
@@ -23,7 +22,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import AllNotificationsDialog from './AllNotificationsDialog';
 import EditProfileDialog from './EditProfileDialog';
 
@@ -80,11 +78,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   };
 
   const notifications = [
-    { id: 1, title: "High burnout risk detected", description: "Alex Johnson's burnout risk increased to 85%", time: "10 mins ago" },
-    { id: 2, title: "Performance alert", description: "Sarah Miller's task completion rate dropped by 30%", time: "1 hour ago" },
-    { id: 3, title: "Team alert", description: "Engineering team working overtime for 3rd consecutive week", time: "3 hours ago" },
-    { id: 4, title: "System notification", description: "Report generation complete", time: "Yesterday" },
+    { id: 1, title: "High burnout risk detected", description: "Alex Johnson's burnout risk increased to 85%", time: "10 mins ago", link: "/employee/1" },
+    { id: 2, title: "Performance alert", description: "Sarah Miller's task completion rate dropped by 30%", time: "1 hour ago", link: "/employee/2" },
+    { id: 3, title: "Team alert", description: "Engineering team working overtime for 3rd consecutive week", time: "3 hours ago", link: "/alerts" },
+    { id: 4, title: "System notification", description: "Report generation complete", time: "Yesterday", link: "/reports" },
   ];
+
+  const handleNotificationClick = (notification: any) => {
+    if (notification.link) {
+      navigate(notification.link);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -168,13 +172,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
+                <DropdownMenuContent align="end" className="w-80" forceMount>
                   <div className="p-4 border-b border-gray-100">
                     <h3 className="font-medium">Notifications</h3>
                   </div>
                   <div className="max-h-80 overflow-y-auto">
                     {notifications.map((notification) => (
-                      <DropdownMenuItem key={notification.id} className="p-4 cursor-pointer">
+                      <DropdownMenuItem 
+                        key={notification.id} 
+                        className="p-4 cursor-pointer"
+                        onClick={() => handleNotificationClick(notification)}
+                      >
                         <div>
                           <div className="font-medium">{notification.title}</div>
                           <p className="text-sm text-gray-500">{notification.description}</p>

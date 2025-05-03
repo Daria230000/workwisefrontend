@@ -3,9 +3,11 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
-import { Bell, Filter, CheckCircle, AlertCircle, Clock, Search } from 'lucide-react';
+import { Bell, CheckCircle, AlertCircle, Clock, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface AllNotificationsDialogProps {
   open: boolean;
@@ -19,22 +21,24 @@ interface Notification {
   time: string;
   type: 'alert' | 'info' | 'success';
   isRead: boolean;
+  link?: string;
 }
 
 const AllNotificationsDialog: React.FC<AllNotificationsDialogProps> = ({ open, onOpenChange }) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   
-  const notifications: Notification[] = [
-    { id: 1, title: "High burnout risk detected", description: "Alex Johnson's burnout risk increased to 85%", time: "10 mins ago", type: 'alert', isRead: false },
-    { id: 2, title: "Performance alert", description: "Sarah Miller's task completion rate dropped by 30%", time: "1 hour ago", type: 'alert', isRead: false },
-    { id: 3, title: "Team alert", description: "Engineering team working overtime for 3rd consecutive week", time: "3 hours ago", type: 'alert', isRead: false },
-    { id: 4, title: "Report generation complete", description: "Monthly performance report is ready for review", time: "Yesterday", type: 'info', isRead: true },
-    { id: 5, title: "New employee onboarded", description: "David Wilson has completed onboarding", time: "2 days ago", type: 'success', isRead: true },
+  const [notifications, setNotifications] = useState<Notification[]>([
+    { id: 1, title: "High burnout risk detected", description: "Alex Johnson's burnout risk increased to 85%", time: "10 mins ago", type: 'alert', isRead: false, link: "/employee/1" },
+    { id: 2, title: "Performance alert", description: "Sarah Miller's task completion rate dropped by 30%", time: "1 hour ago", type: 'alert', isRead: false, link: "/employee/2" },
+    { id: 3, title: "Team alert", description: "Engineering team working overtime for 3rd consecutive week", time: "3 hours ago", type: 'alert', isRead: false, link: "/alerts" },
+    { id: 4, title: "Report generation complete", description: "Monthly performance report is ready for review", time: "Yesterday", type: 'info', isRead: true, link: "/reports" },
+    { id: 5, title: "New employee onboarded", description: "David Wilson has completed onboarding", time: "2 days ago", type: 'success', isRead: true, link: "/employees" },
     { id: 6, title: "System maintenance", description: "System maintenance scheduled for this weekend", time: "3 days ago", type: 'info', isRead: true },
     { id: 7, title: "Project milestone completed", description: "Team has completed the Dashboard phase", time: "4 days ago", type: 'success', isRead: true },
-    { id: 8, title: "New policy update", description: "Remote work policy has been updated", time: "1 week ago", type: 'info', isRead: true },
-  ];
+    { id: 8, title: "New policy update", description: "Remote work policy has been updated", time: "1 week ago", type: 'info', isRead: true, link: "/settings" },
+  ]);
 
   const filterNotifications = () => {
     let filtered = [...notifications];
@@ -73,6 +77,31 @@ const AllNotificationsDialog: React.FC<AllNotificationsDialogProps> = ({ open, o
     }
   };
 
+  const handleMarkAllAsRead = () => {
+    setNotifications(prevNotifications => 
+      prevNotifications.map(notification => ({
+        ...notification,
+        isRead: true
+      }))
+    );
+    toast.success("All notifications marked as read");
+  };
+
+  const handleNotificationClick = (notification: Notification) => {
+    // Mark this notification as read
+    setNotifications(prevNotifications =>
+      prevNotifications.map(notif =>
+        notif.id === notification.id ? { ...notif, isRead: true } : notif
+      )
+    );
+    
+    // Navigate to the linked page if there's a link
+    if (notification.link) {
+      onOpenChange(false); // Close the dialog
+      navigate(notification.link);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
@@ -97,10 +126,7 @@ const AllNotificationsDialog: React.FC<AllNotificationsDialogProps> = ({ open, o
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button variant="outline" size="icon" className="ml-2">
-            <Filter className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" className="ml-2">
+          <Button variant="outline" className="ml-2" onClick={handleMarkAllAsRead}>
             Mark all as read
           </Button>
         </div>
@@ -146,6 +172,7 @@ const AllNotificationsDialog: React.FC<AllNotificationsDialogProps> = ({ open, o
           <div 
             key={notification.id} 
             className={`p-4 hover:bg-gray-50 cursor-pointer ${notification.isRead ? '' : 'bg-purple-50'}`}
+            onClick={() => handleNotificationClick(notification)}
           >
             <div className="flex">
               <div className="mr-3 mt-1">
