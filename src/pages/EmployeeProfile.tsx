@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
@@ -49,6 +50,11 @@ const EmployeeProfile: React.FC = () => {
   
   // Find the employee data based on the ID parameter
   const employeeData = employeesData.find(emp => emp.id === id) || employeesData[0];
+  
+  // Log for debugging purposes
+  console.log("Current ID param:", id);
+  console.log("Available employee IDs:", employeesData.map(emp => emp.id));
+  console.log("Selected employee:", employeeData);
   
   return (
     <DashboardLayout>

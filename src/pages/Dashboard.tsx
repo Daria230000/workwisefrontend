@@ -33,6 +33,7 @@ const Dashboard: React.FC = () => {
   }, []);
   
   const viewEmployeeProfile = (id: number) => {
+    console.log("Navigating to employee profile with ID:", id);
     navigate(`/employee/${id}`);
   };
 
