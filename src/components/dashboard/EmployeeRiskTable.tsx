@@ -4,16 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowDown, ArrowUp } from 'lucide-react';
-
-interface Employee {
-  id: number;
-  name: string;
-  department: string;
-  risk: number;
-  trend: 'up' | 'down';
-  reason: string;
-  tool: string;
-}
+import { Employee } from '../../store/dashboardStore';
 
 interface EmployeeRiskTableProps {
   riskEmployeeData: Employee[];

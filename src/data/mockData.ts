@@ -1,11 +1,10 @@
-
-// Mock employee risk data
+// Mock employee risk data - Ensuring trend is strictly 'up' or 'down'
 export const riskEmployeeData = [
-  { id: 1, name: 'Alice Cooper', department: 'Engineering', risk: 85, trend: 'up', reason: 'Weekend hours increased by 40%', tool: 'jira' },
-  { id: 2, name: 'Bob Smith', department: 'Design', risk: 78, trend: 'up', reason: 'Consecutive late night work', tool: 'toggl' },
-  { id: 3, name: 'Carol Davis', department: 'Marketing', risk: 67, trend: 'down', reason: 'Multiple deadlines this week', tool: 'slack' },
-  { id: 4, name: 'Dave Johnson', department: 'Product', risk: 64, trend: 'up', reason: 'Task overload in sprint', tool: 'jira' },
-  { id: 5, name: 'Eva Williams', department: 'Engineering', risk: 58, trend: 'down', reason: 'Frequent context switching', tool: 'github' },
+  { id: 1, name: 'Alice Cooper', department: 'Engineering', risk: 85, trend: 'up' as const, reason: 'Weekend hours increased by 40%', tool: 'jira' },
+  { id: 2, name: 'Bob Smith', department: 'Design', risk: 78, trend: 'up' as const, reason: 'Consecutive late night work', tool: 'toggl' },
+  { id: 3, name: 'Carol Davis', department: 'Marketing', risk: 67, trend: 'down' as const, reason: 'Multiple deadlines this week', tool: 'slack' },
+  { id: 4, name: 'Dave Johnson', department: 'Product', risk: 64, trend: 'up' as const, reason: 'Task overload in sprint', tool: 'jira' },
+  { id: 5, name: 'Eva Williams', department: 'Engineering', risk: 58, trend: 'down' as const, reason: 'Frequent context switching', tool: 'github' },
 ];
 
 // Employee data for profiles
@@ -205,7 +204,7 @@ export const defaultSprintData = [
 export const defaultBurnoutRiskData = {
   value: 45,
   trend: '+12.3%',
-  trendDirection: 'up' as 'up' | 'down',
+  trendDirection: 'up' as const,
 };
 
 export const defaultAlertsData = {
