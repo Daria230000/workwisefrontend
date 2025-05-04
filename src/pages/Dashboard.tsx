@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,6 +19,7 @@ import {
 import { Calendar, ArrowDown, ArrowUp, AlertTriangle } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [timeRange, setTimeRange] = useState('30');
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [sprintTab, setSprintTab] = useState('current');
@@ -153,6 +153,10 @@ const Dashboard: React.FC = () => {
       ]);
     }
   }, [sprintTab]);
+
+  const viewEmployeeProfile = (id: number) => {
+    navigate(`/employee/${id}`);
+  };
 
   return (
     <DashboardLayout>
@@ -338,11 +342,14 @@ const Dashboard: React.FC = () => {
                       </td>
                       <td className="py-4">{employee.reason}</td>
                       <td className="py-4">
-                        <Link to={`/employee/${employee.id}`}>
-                          <Button variant="outline" size="sm" className="text-purple-600 border-purple-200">
-                            View Profile
-                          </Button>
-                        </Link>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-purple-600 border-purple-200"
+                          onClick={() => viewEmployeeProfile(employee.id)}
+                        >
+                          View Profile
+                        </Button>
                       </td>
                     </tr>
                   ))
