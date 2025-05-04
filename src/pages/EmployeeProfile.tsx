@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -37,58 +36,8 @@ import ScheduleMeetingDialog from '../components/ScheduleMeetingDialog';
 import HrReviewDialog from '../components/HrReviewDialog';
 import ScheduleReviewDialog from '../components/ScheduleReviewDialog';
 
-// Mock data
-const employeeData = {
-  id: '1',
-  name: 'Alice Cooper',
-  title: 'Senior Frontend Developer',
-  department: 'Engineering',
-  avatar: '/placeholder.svg',
-  email: 'alice.cooper@workwise.com',
-  phone: '(555) 123-4567',
-  projects: ['Website Redesign', 'Mobile App', 'Dashboard Development'],
-  metrics: {
-    avgHoursWorked: 7.8,
-    sickDaysLast30: 2,
-    currentLoad: 'High',
-    burnoutRisk: 85,
-    completedTasks: 42,
-    overdueAssignments: 3,
-    sprintContribution: 32,
-    ptoBalance: 14,
-  },
-  skills: [
-    { name: 'React', level: 95 },
-    { name: 'TypeScript', level: 88 },
-    { name: 'UI/UX Design', level: 75 },
-    { name: 'API Integration', level: 90 },
-    { name: 'Testing', level: 80 },
-  ],
-  burnoutFactors: [
-    { factor: 'Weekend work', impact: '+28%', trend: 'increasing' },
-    { factor: 'Late night activity', impact: '+22%', trend: 'stable' },
-    { factor: 'Task switching', impact: '+18%', trend: 'increasing' },
-    { factor: 'Meeting load', impact: '+12%', trend: 'decreasing' },
-  ],
-};
-
-const performanceData = [
-  { date: '2023-01', tasks: 35, velocity: 0.8 },
-  { date: '2023-02', tasks: 28, velocity: 0.7 },
-  { date: '2023-03', tasks: 42, velocity: 0.85 },
-  { date: '2023-04', tasks: 38, velocity: 0.75 },
-  { date: '2023-05', tasks: 45, velocity: 0.9 },
-  { date: '2023-06', tasks: 40, velocity: 0.8 },
-];
-
-const absenceData = [
-  { month: 'Jan', sick: 2, pto: 0 },
-  { month: 'Feb', sick: 1, pto: 3 },
-  { month: 'Mar', sick: 0, pto: 0 },
-  { month: 'Apr', sick: 3, pto: 0 },
-  { month: 'May', sick: 1, pto: 5 },
-  { month: 'Jun', sick: 0, pto: 0 },
-];
+// Import mock data
+import { employeesData, performanceData, absenceData } from '../data/mockData';
 
 const EmployeeProfile: React.FC = () => {
   const { id } = useParams<{id: string}>();
@@ -97,6 +46,9 @@ const EmployeeProfile: React.FC = () => {
   const [openScheduleMeeting, setOpenScheduleMeeting] = useState(false);
   const [openHrReview, setOpenHrReview] = useState(false);
   const [openScheduleReview, setOpenScheduleReview] = useState(false);
+  
+  // Find the employee data based on the ID parameter
+  const employeeData = employeesData.find(emp => emp.id === id) || employeesData[0];
   
   return (
     <DashboardLayout>
