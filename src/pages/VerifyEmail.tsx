@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { Input } from '@/components/ui/input';
 import { toast } from "sonner";
 import Logo from '../components/Logo';
 
@@ -10,9 +10,12 @@ const VerifyEmail: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email || 'email@gmail.com';
-  const [value, setValue] = useState('');
+  const [verificationCode, setVerificationCode] = useState(['', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
+
+  // Create refs for each input
+  const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
   React.useEffect(() => {
     if (resendTimer > 0) {
@@ -21,10 +24,32 @@ const VerifyEmail: React.FC = () => {
     }
   }, [resendTimer]);
 
+  const handleInputChange = (index: number, value: string) => {
+    // Allow only numbers
+    if (value && !/^[0-9]$/.test(value)) return;
+    
+    // Update the verification code state
+    const newCode = [...verificationCode];
+    newCode[index] = value;
+    setVerificationCode(newCode);
+
+    // Move focus to next input if a value is entered and it's not the last input
+    if (value && index < 4) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Move focus to previous input on backspace if current input is empty
+    if (e.key === 'Backspace' && !verificationCode[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
   const handleVerify = () => {
     setIsLoading(true);
     
-    // For demo purposes
+    // For demo purposes, navigate to dashboard after verification
     setTimeout(() => {
       setIsLoading(false);
       toast.success("Email verified successfully!");
@@ -58,30 +83,26 @@ const VerifyEmail: React.FC = () => {
             {email}
           </p>
           
-          <div className="flex justify-center mb-6">
-            <InputOTP 
-              maxLength={5}
-              value={value}
-              onChange={(value) => setValue(value)}
-              render={({ slots }) => (
-                <InputOTPGroup>
-                  {slots.map((slot, i) => (
-                    <InputOTPSlot 
-                      key={i} 
-                      {...slot} 
-                      className="w-16 h-16 text-2xl border-purple-300 rounded-lg"
-                      inputMode="numeric"
-                    />
-                  ))}
-                </InputOTPGroup>
-              )}
-            />
+          <div className="flex justify-center gap-2 mb-6">
+            {verificationCode.map((digit, index) => (
+              <Input
+                key={index}
+                ref={(el) => (inputRefs.current[index] = el)}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleInputChange(index, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+                className="w-16 h-16 text-2xl text-center border-purple-300 rounded-lg"
+              />
+            ))}
           </div>
           
           <div className="space-y-4">
             <Button 
               onClick={handleVerify}
-              disabled={value.length !== 5 || isLoading}
+              disabled={verificationCode.join('').length !== 5 || isLoading}
               className="w-full bg-purple-500 hover:bg-purple-600 h-12 rounded-lg"
             >
               {isLoading ? 'Verifying...' : 'Verify'}

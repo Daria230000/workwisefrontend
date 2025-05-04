@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, Mail, Lock, Building, Facebook, Instagram, Linkedin } from 'lucide-react';
+import { User, Mail, Lock, Building, Facebook, Instagram } from 'lucide-react';
 import { toast } from "sonner";
 import Logo from '../components/Logo';
 
@@ -148,9 +147,6 @@ const SignUp: React.FC = () => {
             </a>
             <a href="#" className="rounded-full bg-black p-2 text-white hover:bg-purple-600">
               <Instagram size={24} />
-            </a>
-            <a href="#" className="rounded-full bg-black p-2 text-white hover:bg-purple-600">
-              <Linkedin size={24} />
             </a>
           </div>
         </div>

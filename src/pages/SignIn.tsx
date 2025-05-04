@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Mail, Lock, Facebook, Instagram, Linkedin } from 'lucide-react';
+import { Mail, Lock, Facebook, Instagram } from 'lucide-react';
 import { toast } from "sonner";
 import Logo from '../components/Logo';
 
@@ -113,9 +112,6 @@ const SignIn: React.FC = () => {
             </a>
             <a href="#" className="rounded-full bg-black p-2 text-white hover:bg-purple-600">
               <Instagram size={24} />
-            </a>
-            <a href="#" className="rounded-full bg-black p-2 text-white hover:bg-purple-600">
-              <Linkedin size={24} />
             </a>
           </div>
         </div>
