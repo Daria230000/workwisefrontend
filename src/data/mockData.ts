@@ -1,7 +1,7 @@
 // Mock employee risk data - Ensuring trend is strictly 'up' or 'down'
 export const riskEmployeeData = [
   { id: "1", name: 'Alice Cooper', department: 'Engineering', risk: 85, trend: 'up' as const, reason: 'Weekend hours increased by 40%', tool: 'jira' },
-  { id: "2", name: 'Bob Smith', department: 'Design', risk: 78, trend: 'up' as const, reason: 'Consecutive late night work', tool: 'toggl' },
+  { id: "2", name: 'Sarah Johnson', department: 'Design', risk: 78, trend: 'up' as const, reason: 'Consecutive late night work', tool: 'toggl' },
   { id: "3", name: 'Carol Davis', department: 'Marketing', risk: 67, trend: 'down' as const, reason: 'Multiple deadlines this week', tool: 'slack' },
   { id: "4", name: 'Dave Johnson', department: 'Product', risk: 64, trend: 'up' as const, reason: 'Task overload in sprint', tool: 'jira' },
   { id: "5", name: 'Eva Williams', department: 'Engineering', risk: 58, trend: 'down' as const, reason: 'Frequent context switching', tool: 'github' },
@@ -44,11 +44,11 @@ export const employeesData = [
   },
   {
     id: "2",
-    name: 'Bob Smith',
+    name: 'Sarah Johnson',
     title: 'UI/UX Designer',
     department: 'Design',
     avatar: '/placeholder.svg',
-    email: 'bob.smith@workwise.com',
+    email: 'sarah.johnson@workwise.com',
     phone: '(555) 234-5678',
     projects: ['Website Redesign', 'Mobile App', 'Brand Refresh'],
     metrics: {

@@ -50,15 +50,12 @@ const EmployeeProfile: React.FC = () => {
   console.log("Current ID param:", id);
   console.log("Available employee IDs:", employeesData.map(emp => emp.id));
   
-  // Fixed: Explicitly match the ID as string to find the correct employee
+  // Find the employee by exact string ID match
   const employeeData = employeesData.find(emp => emp.id === id);
   
   // Show error if no employee found
   if (!employeeData) {
     console.error(`No employee found with ID: ${id}`);
-    // Use the first employee as a fallback only for rendering
-    const fallbackEmployee = employeesData[0];
-    
     return (
       <DashboardLayout>
         <div className="p-6 bg-red-50 border border-red-200 rounded-md mb-6">
