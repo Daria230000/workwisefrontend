@@ -1,4 +1,3 @@
-
 // Mock employee risk data - Ensuring trend is strictly 'up' or 'down'
 export const riskEmployeeData = [
   { id: 1, name: 'Alice Cooper', department: 'Engineering', risk: 85, trend: 'up' as const, reason: 'Weekend hours increased by 40%', tool: 'jira' },
@@ -8,10 +7,10 @@ export const riskEmployeeData = [
   { id: 5, name: 'Eva Williams', department: 'Engineering', risk: 58, trend: 'down' as const, reason: 'Frequent context switching', tool: 'github' },
 ];
 
-// Employee data for profiles - Converting ID to number to match the riskEmployeeData
+// Employee data for profiles - Using string IDs to match URL parameters
 export const employeesData = [
   {
-    id: '1',
+    id: '1', // Keep as string to match URL parameters
     name: 'Alice Cooper',
     title: 'Senior Frontend Developer',
     department: 'Engineering',
