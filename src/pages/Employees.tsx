@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Search, UserPlus, Users, ArrowUpDown, Eye } from 'lucide-react';
 
 interface Employee {
-  id: number;
+  id: string;  // Changed to string for consistency
   name: string;
   department: string;
   role: string;
@@ -49,16 +49,16 @@ const Employees: React.FC = () => {
   // Mock data
   useEffect(() => {
     const mockEmployees: Employee[] = [
-      { id: 1, name: 'John Smith', department: 'Engineering', role: 'Senior Developer', status: 'active', riskScore: 25 },
-      { id: 2, name: 'Sarah Johnson', department: 'Design', role: 'UI/UX Designer', status: 'active', riskScore: 15 },
-      { id: 3, name: 'Michael Brown', department: 'Marketing', role: 'Marketing Specialist', status: 'vacation', riskScore: 5 },
-      { id: 4, name: 'Emily Davis', department: 'Engineering', role: 'Frontend Developer', status: 'active', riskScore: 78 },
-      { id: 5, name: 'David Wilson', department: 'Product', role: 'Product Manager', status: 'active', riskScore: 45 },
-      { id: 6, name: 'Jessica Taylor', department: 'Design', role: 'Graphic Designer', status: 'sick', riskScore: 30 },
-      { id: 7, name: 'Robert Miller', department: 'Engineering', role: 'DevOps Engineer', status: 'active', riskScore: 62 },
-      { id: 8, name: 'Amanda Thomas', department: 'HR', role: 'HR Manager', status: 'active', riskScore: 22 },
-      { id: 9, name: 'Daniel Anderson', department: 'Marketing', role: 'Content Writer', status: 'vacation', riskScore: 18 },
-      { id: 10, name: 'Lisa Martinez', department: 'Engineering', role: 'QA Engineer', status: 'active', riskScore: 55 },
+      { id: "1", name: 'John Smith', department: 'Engineering', role: 'Senior Developer', status: 'active', riskScore: 25 },
+      { id: "2", name: 'Sarah Johnson', department: 'Design', role: 'UI/UX Designer', status: 'active', riskScore: 15 },
+      { id: "3", name: 'Michael Brown', department: 'Marketing', role: 'Marketing Specialist', status: 'vacation', riskScore: 5 },
+      { id: "4", name: 'Emily Davis', department: 'Engineering', role: 'Frontend Developer', status: 'active', riskScore: 78 },
+      { id: "5", name: 'David Wilson', department: 'Product', role: 'Product Manager', status: 'active', riskScore: 45 },
+      { id: "6", name: 'Jessica Taylor', department: 'Design', role: 'Graphic Designer', status: 'sick', riskScore: 30 },
+      { id: "7", name: 'Robert Miller', department: 'Engineering', role: 'DevOps Engineer', status: 'active', riskScore: 62 },
+      { id: "8", name: 'Amanda Thomas', department: 'HR', role: 'HR Manager', status: 'active', riskScore: 22 },
+      { id: "9", name: 'Daniel Anderson', department: 'Marketing', role: 'Content Writer', status: 'vacation', riskScore: 18 },
+      { id: "10", name: 'Lisa Martinez', department: 'Engineering', role: 'QA Engineer', status: 'active', riskScore: 55 },
     ];
     
     const mockTeams: Team[] = [
@@ -165,7 +165,7 @@ const Employees: React.FC = () => {
     setViewTeamOpen(true);
   };
   
-  const viewEmployee = (id: number) => {
+  const viewEmployee = (id: string) => {  // Updated to accept string ID
     navigate(`/employee/${id}`);
   };
   

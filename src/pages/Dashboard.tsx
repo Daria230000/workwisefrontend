@@ -32,7 +32,7 @@ const Dashboard: React.FC = () => {
     useDashboardStore.getState().updateFilteredEmployees();
   }, []);
   
-  const viewEmployeeProfile = (id: number) => {
+  const viewEmployeeProfile = (id: string) => {  // Updated to accept string ID
     console.log("Navigating to employee profile with ID:", id);
     navigate(`/employee/${id}`);
   };

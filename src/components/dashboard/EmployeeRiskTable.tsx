@@ -8,7 +8,7 @@ import { Employee } from '../../store/dashboardStore';
 
 interface EmployeeRiskTableProps {
   riskEmployeeData: Employee[];
-  onViewProfile: (id: number) => void;
+  onViewProfile: (id: string) => void;  // Updated to use string ID
 }
 
 const EmployeeRiskTable: React.FC<EmployeeRiskTableProps> = ({ 
@@ -60,7 +60,7 @@ const EmployeeRiskTable: React.FC<EmployeeRiskTableProps> = ({
                         variant="outline" 
                         size="sm" 
                         className="text-purple-600 border-purple-200"
-                        onClick={() => onViewProfile(employee.id)}
+                        onClick={() => onViewProfile(String(employee.id))}  // Convert ID to string
                       >
                         View Profile
                       </Button>

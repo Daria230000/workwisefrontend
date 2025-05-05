@@ -10,7 +10,7 @@ import {
 } from '../data/mockData';
 
 export interface Employee {
-  id: number;
+  id: string;  // Updated to string type
   name: string;
   department: string;
   risk: number;
