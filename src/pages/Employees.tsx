@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
@@ -11,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Search, UserPlus, Users, ArrowUpDown, Eye } from 'lucide-react';
 
 interface Employee {
-  id: string;  // Changed to string for consistency
+  id: string;  // Ensure this is string type
   name: string;
   department: string;
   role: string;
@@ -165,7 +166,9 @@ const Employees: React.FC = () => {
     setViewTeamOpen(true);
   };
   
-  const viewEmployee = (id: string) => {  // Updated to accept string ID
+  // Updated to explicitly handle string ID
+  const viewEmployee = (id: string) => {
+    console.log("Navigating to employee profile with ID:", id);
     navigate(`/employee/${id}`);
   };
   

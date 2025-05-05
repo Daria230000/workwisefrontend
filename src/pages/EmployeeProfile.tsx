@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
@@ -48,24 +47,33 @@ const EmployeeProfile: React.FC = () => {
   const [openHrReview, setOpenHrReview] = useState(false);
   const [openScheduleReview, setOpenScheduleReview] = useState(false);
   
-  // Find the employee data based on the ID parameter
-  const employeeData = employeesData.find(emp => emp.id === id) || employeesData[0];
-  
-  // Log for debugging purposes
+  // Find the employee data based on the ID parameter - with improved debugging
   console.log("Current ID param:", id);
   console.log("Available employee IDs:", employeesData.map(emp => emp.id));
-  console.log("Selected employee:", employeeData);
+  
+  // Explicitly find employee by matching string ID
+  const employeeData = employeesData.find(emp => emp.id === id);
+  
+  // Fallback if no match is found
+  if (!employeeData) {
+    console.error(`No employee found with ID: ${id}`);
+  }
+  
+  // Use found employee or first one as fallback (should never happen if IDs are correct)
+  const employee = employeeData || employeesData[0];
+  
+  console.log("Selected employee:", employee);
   
   return (
     <DashboardLayout>
       <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-full bg-purple-100 flex items-center justify-center text-xl font-semibold text-purple-700">
-            {employeeData.name.split(' ').map(n => n[0]).join('')}
+            {employee.name.split(' ').map(n => n[0]).join('')}
           </div>
           <div>
-            <h1 className="text-2xl font-bold">{employeeData.name}</h1>
-            <p className="text-gray-600">{employeeData.title} • {employeeData.department}</p>
+            <h1 className="text-2xl font-bold">{employee.name}</h1>
+            <p className="text-gray-600">{employee.title} • {employee.department}</p>
           </div>
         </div>
       </div>
@@ -90,26 +98,26 @@ const EmployeeProfile: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <h3 className="font-medium text-gray-500 mb-1">Email</h3>
-                    <p>{employeeData.email}</p>
+                    <p>{employee.email}</p>
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-500 mb-1">Phone</h3>
-                    <p>{employeeData.phone}</p>
+                    <p>{employee.phone}</p>
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-500 mb-1">Department</h3>
-                    <p>{employeeData.department}</p>
+                    <p>{employee.department}</p>
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-500 mb-1">Position</h3>
-                    <p>{employeeData.title}</p>
+                    <p>{employee.title}</p>
                   </div>
                 </div>
                 
                 <div className="mt-6">
                   <h3 className="font-medium text-gray-500 mb-2">Current Projects</h3>
                   <div className="flex flex-wrap gap-2">
-                    {employeeData.projects.map((project, index) => (
+                    {employee.projects.map((project, index) => (
                       <Badge key={index} variant="outline" className="bg-purple-50">
                         {project}
                       </Badge>
@@ -128,23 +136,23 @@ const EmployeeProfile: React.FC = () => {
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span className="text-gray-500">Avg. Hours Worked</span>
-                      <span className="font-medium">{employeeData.metrics.avgHoursWorked} hrs/day</span>
+                      <span className="font-medium">{employee.metrics.avgHoursWorked} hrs/day</span>
                     </div>
-                    <Progress value={employeeData.metrics.avgHoursWorked * 10} className="h-2" />
+                    <Progress value={employee.metrics.avgHoursWorked * 10} className="h-2" />
                   </div>
                   
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span className="text-gray-500">Sick Days (30 days)</span>
-                      <span className="font-medium">{employeeData.metrics.sickDaysLast30} days</span>
+                      <span className="font-medium">{employee.metrics.sickDaysLast30} days</span>
                     </div>
-                    <Progress value={employeeData.metrics.sickDaysLast30 * 10} className="h-2" />
+                    <Progress value={employee.metrics.sickDaysLast30 * 10} className="h-2" />
                   </div>
                   
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span className="text-gray-500">Current Load</span>
-                      <span className="font-medium text-red-500">{employeeData.metrics.currentLoad}</span>
+                      <span className="font-medium text-red-500">{employee.metrics.currentLoad}</span>
                     </div>
                     <Progress value={90} className="h-2 bg-red-100">
                       <div className="h-full bg-red-500 rounded-full" />
@@ -154,9 +162,9 @@ const EmployeeProfile: React.FC = () => {
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span className="text-gray-500">Burnout Risk</span>
-                      <span className="font-medium text-red-500">{employeeData.metrics.burnoutRisk}%</span>
+                      <span className="font-medium text-red-500">{employee.metrics.burnoutRisk}%</span>
                     </div>
-                    <Progress value={employeeData.metrics.burnoutRisk} className="h-2 bg-red-100">
+                    <Progress value={employee.metrics.burnoutRisk} className="h-2 bg-red-100">
                       <div className="h-full bg-red-500 rounded-full" />
                     </Progress>
                   </div>
@@ -192,11 +200,11 @@ const EmployeeProfile: React.FC = () => {
                         fill="none"
                         stroke="#FF6B6B"
                         strokeWidth="3"
-                        strokeDasharray={`${employeeData.metrics.burnoutRisk}, 100`}
+                        strokeDasharray={`${employee.metrics.burnoutRisk}, 100`}
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center flex-col">
-                      <span className="text-3xl font-bold text-red-500">{employeeData.metrics.burnoutRisk}</span>
+                      <span className="text-3xl font-bold text-red-500">{employee.metrics.burnoutRisk}</span>
                       <span className="text-xs">Risk Score</span>
                     </div>
                   </div>
@@ -215,7 +223,7 @@ const EmployeeProfile: React.FC = () => {
                 
                 <h3 className="font-medium mb-3">Contributing Factors</h3>
                 <div className="space-y-3">
-                  {employeeData.burnoutFactors.map((factor, i) => (
+                  {employee.burnoutFactors.map((factor, i) => (
                     <div key={i} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                       <span>{factor.factor}</span>
                       <div className="flex items-center">
@@ -306,7 +314,7 @@ const EmployeeProfile: React.FC = () => {
                   <CardTitle>Tasks Completed</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-purple-600">{employeeData.metrics.completedTasks}</div>
+                  <div className="text-3xl font-bold text-purple-600">{employee.metrics.completedTasks}</div>
                   <div className="text-sm text-gray-500 mt-1">Last 30 days</div>
                   <div className="text-sm mt-4 text-green-500 flex items-center">
                     <ArrowUp size={16} className="mr-1" />
@@ -320,7 +328,7 @@ const EmployeeProfile: React.FC = () => {
                   <CardTitle>Overdue Assignments</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-red-500">{employeeData.metrics.overdueAssignments}</div>
+                  <div className="text-3xl font-bold text-red-500">{employee.metrics.overdueAssignments}</div>
                   <div className="text-sm text-gray-500 mt-1">Current open tasks</div>
                   <div className="text-sm mt-4 text-red-500 flex items-center">
                     <ArrowUp size={16} className="mr-1" />
@@ -334,7 +342,7 @@ const EmployeeProfile: React.FC = () => {
                   <CardTitle>Sprint Contribution</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-purple-600">{employeeData.metrics.sprintContribution}%</div>
+                  <div className="text-3xl font-bold text-purple-600">{employee.metrics.sprintContribution}%</div>
                   <div className="text-sm text-gray-500 mt-1">Of team velocity</div>
                   <div className="text-sm mt-4 text-green-500 flex items-center">
                     <ArrowUp size={16} className="mr-1" />
@@ -391,11 +399,11 @@ const EmployeeProfile: React.FC = () => {
                         fill="none"
                         stroke="#82ca9d"
                         strokeWidth="3"
-                        strokeDasharray={`${(employeeData.metrics.ptoBalance / 25) * 100}, 100`}
+                        strokeDasharray={`${(employee.metrics.ptoBalance / 25) * 100}, 100`}
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center flex-col">
-                      <span className="text-xl font-bold text-green-600">{employeeData.metrics.ptoBalance}</span>
+                      <span className="text-xl font-bold text-green-600">{employee.metrics.ptoBalance}</span>
                     </div>
                   </div>
                   
@@ -408,7 +416,7 @@ const EmployeeProfile: React.FC = () => {
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span>Days Used</span>
-                    <span>{25 - employeeData.metrics.ptoBalance}</span>
+                    <span>{25 - employee.metrics.ptoBalance}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Days Accrued</span>
@@ -432,7 +440,7 @@ const EmployeeProfile: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {employeeData.skills.map((skill, i) => (
+                {employee.skills.map((skill, i) => (
                   <div key={i}>
                     <div className="flex justify-between text-sm mb-1">
                       <span>{skill.name}</span>
@@ -566,11 +574,11 @@ const EmployeeProfile: React.FC = () => {
       </Tabs>
       
       {/* Dialog Components */}
-      <CoachingPlanDialog open={openCoachingPlan} onOpenChange={setOpenCoachingPlan} employeeName={employeeData.name} />
-      <PeerSupportDialog open={openPeerSupport} onOpenChange={setOpenPeerSupport} employeeName={employeeData.name} />
-      <ScheduleMeetingDialog open={openScheduleMeeting} onOpenChange={setOpenScheduleMeeting} employeeName={employeeData.name} />
-      <HrReviewDialog open={openHrReview} onOpenChange={setOpenHrReview} employeeName={employeeData.name} />
-      <ScheduleReviewDialog open={openScheduleReview} onOpenChange={setOpenScheduleReview} employeeName={employeeData.name} />
+      <CoachingPlanDialog open={openCoachingPlan} onOpenChange={setOpenCoachingPlan} employeeName={employee.name} />
+      <PeerSupportDialog open={openPeerSupport} onOpenChange={setOpenPeerSupport} employeeName={employee.name} />
+      <ScheduleMeetingDialog open={openScheduleMeeting} onOpenChange={setOpenScheduleMeeting} employeeName={employee.name} />
+      <HrReviewDialog open={openHrReview} onOpenChange={setOpenHrReview} employeeName={employee.name} />
+      <ScheduleReviewDialog open={openScheduleReview} onOpenChange={setOpenScheduleReview} employeeName={employee.name} />
     </DashboardLayout>
   );
 };
