@@ -47,21 +47,38 @@ const EmployeeProfile: React.FC = () => {
   const [openHrReview, setOpenHrReview] = useState(false);
   const [openScheduleReview, setOpenScheduleReview] = useState(false);
   
-  // Find the employee data based on the ID parameter - with improved debugging
   console.log("Current ID param:", id);
   console.log("Available employee IDs:", employeesData.map(emp => emp.id));
   
-  // Explicitly find employee by matching string ID
+  // Fixed: Explicitly match the ID as string to find the correct employee
   const employeeData = employeesData.find(emp => emp.id === id);
   
-  // Fallback if no match is found
+  // Show error if no employee found
   if (!employeeData) {
     console.error(`No employee found with ID: ${id}`);
+    // Use the first employee as a fallback only for rendering
+    const fallbackEmployee = employeesData[0];
+    
+    return (
+      <DashboardLayout>
+        <div className="p-6 bg-red-50 border border-red-200 rounded-md mb-6">
+          <h2 className="text-lg font-semibold text-red-700">Employee Not Found</h2>
+          <p className="text-red-600">
+            We couldn't find an employee with ID: {id}. Please go back and try again.
+          </p>
+          <Button 
+            className="mt-4 bg-red-600 hover:bg-red-700" 
+            onClick={() => window.history.back()}
+          >
+            Go Back
+          </Button>
+        </div>
+      </DashboardLayout>
+    );
   }
   
-  // Use found employee or first one as fallback (should never happen if IDs are correct)
-  const employee = employeeData || employeesData[0];
-  
+  // If we found the employee, render the profile
+  const employee = employeeData;
   console.log("Selected employee:", employee);
   
   return (

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
@@ -166,7 +165,7 @@ const Employees: React.FC = () => {
     setViewTeamOpen(true);
   };
   
-  // Updated to explicitly handle string ID
+  // Updated to explicitly pass the employee ID as string and log it
   const viewEmployee = (id: string) => {
     console.log("Navigating to employee profile with ID:", id);
     navigate(`/employee/${id}`);
