@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,7 +25,8 @@ import {
 } from 'recharts';
 import ViewReportDialog from '../components/ViewReportDialog';
 
-const COLORS = ['#8269FF', '#9b87f5', '#6E59A5', '#7E69AB', '#118AB2'];
+// More distinct color palette for all charts
+const COLORS = ['#8269FF', '#33C3F0', '#F97316', '#10B981', '#EC4899'];
 
 const Reports: React.FC = () => {
   const [timeRange, setTimeRange] = useState('30');
@@ -167,8 +169,17 @@ const Reports: React.FC = () => {
                   margin={{ top: 20, right: 30, left: 60, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} width={80} />
+                  <XAxis 
+                    type="number" 
+                    domain={[0, 50]}
+                    tickFormatter={(value) => `${value}%`}
+                  />
+                  <YAxis 
+                    dataKey="name" 
+                    type="category" 
+                    tick={{ fontSize: 13, fontWeight: 500 }} 
+                    width={100}
+                  />
                   <Tooltip
                     formatter={(value) => [`${value}%`, 'Percentage']}
                     contentStyle={{
@@ -177,8 +188,27 @@ const Reports: React.FC = () => {
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                       border: '1px solid #e2e8f0'
                     }}
+                    cursor={{ fill: 'rgba(130, 105, 255, 0.1)' }}
                   />
-                  <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                  <Bar 
+                    dataKey="value" 
+                    radius={[0, 4, 4, 0]}
+                    barSize={30}
+                    label={(props) => {
+                      const { x, y, width, value } = props;
+                      return (
+                        <text 
+                          x={x + width + 5} 
+                          y={y + 15} 
+                          fill="#333" 
+                          fontSize={12}
+                          textAnchor="start"
+                        >
+                          {`${value}%`}
+                        </text>
+                      );
+                    }}
+                  >
                     {distributionData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
@@ -267,11 +297,11 @@ const Reports: React.FC = () => {
                       border: '1px solid #e2e8f0'
                     }}
                   />
-                  <Legend />
-                  <Line type="monotone" dataKey="engineering" stroke="#8269FF" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                  <Line type="monotone" dataKey="marketing" stroke="#7E69AB" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                  <Line type="monotone" dataKey="design" stroke="#6E59A5" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                  <Line type="monotone" dataKey="product" stroke="#118AB2" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  <Legend verticalAlign="top" height={36} />
+                  <Line type="monotone" dataKey="engineering" stroke={COLORS[0]} strokeWidth={2} dot={{ r: 4, fill: COLORS[0] }} activeDot={{ r: 6 }} name="Engineering" />
+                  <Line type="monotone" dataKey="marketing" stroke={COLORS[1]} strokeWidth={2} dot={{ r: 4, fill: COLORS[1] }} activeDot={{ r: 6 }} name="Marketing" />
+                  <Line type="monotone" dataKey="design" stroke={COLORS[2]} strokeWidth={2} dot={{ r: 4, fill: COLORS[2] }} activeDot={{ r: 6 }} name="Design" />
+                  <Line type="monotone" dataKey="product" stroke={COLORS[3]} strokeWidth={2} dot={{ r: 4, fill: COLORS[3] }} activeDot={{ r: 6 }} name="Product" />
                 </LineChart>
               </ResponsiveContainer>
             </div>
