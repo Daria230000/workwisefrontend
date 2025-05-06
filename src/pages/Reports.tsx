@@ -13,14 +13,18 @@ import {
   CartesianGrid, 
   ResponsiveContainer,
   Tooltip,
-  PieChart,
-  Pie,
-  Cell,
-  Legend
+  Legend,
+  LineChart,
+  Line,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar
 } from 'recharts';
 import ViewReportDialog from '../components/ViewReportDialog';
 
-const COLORS = ['#8269FF', '#FF6B6B', '#FFD166', '#06D6A0', '#118AB2'];
+const COLORS = ['#8269FF', '#9b87f5', '#6E59A5', '#7E69AB', '#118AB2'];
 
 const Reports: React.FC = () => {
   const [timeRange, setTimeRange] = useState('30');
@@ -125,28 +129,21 @@ const Reports: React.FC = () => {
           <CardContent>
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={factorsData}
-                    cx="50%"
-                    cy="40%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {factorsData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
-                  <Legend 
-                    layout="horizontal" 
-                    verticalAlign="bottom" 
-                    align="center"
-                    wrapperStyle={{paddingTop: "20px"}}
+                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={factorsData}>
+                  <PolarGrid stroke="#e0e0e0" />
+                  <PolarAngleAxis dataKey="name" tick={{ fill: '#555', fontSize: 10 }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 40]} />
+                  <Radar name="Risk Score" dataKey="value" stroke="#8269FF" fill="#8269FF" fillOpacity={0.5} />
+                  <Tooltip 
+                    formatter={(value) => [`${value}%`, 'Percentage']}
+                    contentStyle={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                      border: '1px solid #e2e8f0'
+                    }}
                   />
-                </PieChart>
+                </RadarChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
@@ -164,23 +161,29 @@ const Reports: React.FC = () => {
           <CardContent>
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={distributionData}
-                    cx="50%"
-                    cy="40%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  >
+                <BarChart
+                  layout="vertical"
+                  data={distributionData}
+                  margin={{ top: 20, right: 30, left: 60, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                  <XAxis type="number" />
+                  <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} width={80} />
+                  <Tooltip
+                    formatter={(value) => [`${value}%`, 'Percentage']}
+                    contentStyle={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                      border: '1px solid #e2e8f0'
+                    }}
+                  />
+                  <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                     {distributionData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
-                </PieChart>
+                  </Bar>
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
@@ -237,10 +240,10 @@ const Reports: React.FC = () => {
       </div>
       
       <div className="grid grid-cols-1 gap-6 mb-8">
-        <Card className="shadow-md hover:shadow-lg transition-shadow border-t-4 border-t-green-400">
+        <Card className="shadow-md hover:shadow-lg transition-shadow border-t-4 border-t-purple-400">
           <CardHeader className="pb-3">
             <CardTitle className="text-xl flex items-center gap-2">
-              <span className="bg-green-100 p-1.5 rounded-md text-green-600">
+              <span className="bg-purple-100 p-1.5 rounded-md text-purple-600">
                 <BarChart2 className="h-5 w-5" />
               </span>
               Department Burnout Trend
@@ -249,7 +252,7 @@ const Reports: React.FC = () => {
           <CardContent>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart
+                <LineChart
                   data={trendData}
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
@@ -265,21 +268,21 @@ const Reports: React.FC = () => {
                     }}
                   />
                   <Legend />
-                  <Bar dataKey="engineering" fill="#8269FF" name="Engineering" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="marketing" fill="#FF6B6B" name="Marketing" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="design" fill="#FFD166" name="Design" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="product" fill="#06D6A0" name="Product" radius={[4, 4, 0, 0]} />
-                </BarChart>
+                  <Line type="monotone" dataKey="engineering" stroke="#8269FF" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  <Line type="monotone" dataKey="marketing" stroke="#7E69AB" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  <Line type="monotone" dataKey="design" stroke="#6E59A5" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  <Line type="monotone" dataKey="product" stroke="#118AB2" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                </LineChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
       </div>
       
-      <Card className="shadow-md hover:shadow-lg transition-shadow border-t-4 border-t-amber-400">
+      <Card className="shadow-md hover:shadow-lg transition-shadow border-t-4 border-t-indigo-400">
         <CardHeader className="pb-3">
           <CardTitle className="text-xl flex items-center gap-2">
-            <span className="bg-amber-100 p-1.5 rounded-md text-amber-600">
+            <span className="bg-indigo-100 p-1.5 rounded-md text-indigo-600">
               <FileText className="h-5 w-5" />
             </span>
             Available Reports
@@ -314,7 +317,7 @@ const Reports: React.FC = () => {
                           ${report.type === 'burnout' ? 'bg-red-100 text-red-700' : ''}
                           ${report.type === 'productivity' ? 'bg-blue-100 text-blue-700' : ''}
                           ${report.type === 'wellness' ? 'bg-green-100 text-green-700' : ''}
-                          ${report.type === 'sprint' ? 'bg-amber-100 text-amber-700' : ''}
+                          ${report.type === 'sprint' ? 'bg-purple-100 text-purple-700' : ''}
                         `}>
                           {report.type}
                         </span>
