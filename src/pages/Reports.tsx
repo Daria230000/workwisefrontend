@@ -77,40 +77,50 @@ const Reports: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Reports</h1>
-        <div className="flex space-x-3">
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Time Range" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7">Last 7 Days</SelectItem>
-              <SelectItem value="14">Last 14 Days</SelectItem>
-              <SelectItem value="30">Last 30 Days</SelectItem>
-              <SelectItem value="90">Last 90 Days</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Department" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Departments</SelectItem>
-              <SelectItem value="engineering">Engineering</SelectItem>
-              <SelectItem value="design">Design</SelectItem>
-              <SelectItem value="marketing">Marketing</SelectItem>
-              <SelectItem value="product">Product</SelectItem>
-            </SelectContent>
-          </Select>
+      <div className="mb-8 bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-lg">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+          <div>
+            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">Reports Dashboard</h1>
+            <p className="text-gray-600 mt-1">Analyze team health and performance metrics</p>
+          </div>
+          <div className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3 mt-4 md:mt-0">
+            <Select value={timeRange} onValueChange={setTimeRange}>
+              <SelectTrigger className="w-[160px] bg-white shadow-sm">
+                <SelectValue placeholder="Time Range" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7">Last 7 Days</SelectItem>
+                <SelectItem value="14">Last 14 Days</SelectItem>
+                <SelectItem value="30">Last 30 Days</SelectItem>
+                <SelectItem value="90">Last 90 Days</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+              <SelectTrigger className="w-[180px] bg-white shadow-sm">
+                <SelectValue placeholder="Department" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Departments</SelectItem>
+                <SelectItem value="engineering">Engineering</SelectItem>
+                <SelectItem value="design">Design</SelectItem>
+                <SelectItem value="marketing">Marketing</SelectItem>
+                <SelectItem value="product">Product</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Burnout Risk Factors</CardTitle>
+        <Card className="col-span-1 shadow-md hover:shadow-lg transition-shadow border-t-4 border-t-purple-400">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl flex items-center gap-2">
+              <span className="bg-purple-100 p-1.5 rounded-md text-purple-600">
+                <BarChart2 className="h-5 w-5" />
+              </span>
+              Burnout Risk Factors
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
@@ -129,7 +139,7 @@ const Reports: React.FC = () => {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
                   <Legend 
                     layout="horizontal" 
                     verticalAlign="bottom" 
@@ -142,9 +152,14 @@ const Reports: React.FC = () => {
           </CardContent>
         </Card>
         
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Organizational Burnout Distribution</CardTitle>
+        <Card className="col-span-1 shadow-md hover:shadow-lg transition-shadow border-t-4 border-t-indigo-400">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl flex items-center gap-2">
+              <span className="bg-indigo-100 p-1.5 rounded-md text-indigo-600">
+                <Users className="h-5 w-5" />
+              </span>
+              Team Distribution
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
@@ -164,23 +179,28 @@ const Reports: React.FC = () => {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Report Options</CardTitle>
+        <Card className="col-span-1 shadow-md hover:shadow-lg transition-shadow border-t-4 border-t-blue-400">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl flex items-center gap-2">
+              <span className="bg-blue-100 p-1.5 rounded-md text-blue-600">
+                <FileText className="h-5 w-5" />
+              </span>
+              Report Options
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
-                <h3 className="font-medium mb-2">Report Type</h3>
+                <h3 className="font-medium mb-2 text-gray-700">Report Type</h3>
                 <Select value={reportType} onValueChange={setReportType}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full bg-white">
                     <SelectValue placeholder="Report Type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -196,7 +216,7 @@ const Reports: React.FC = () => {
               <div className="pt-4">
                 <Button 
                   onClick={handleGenerateReport}
-                  className="w-full bg-purple-500 hover:bg-purple-600"
+                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 shadow-md"
                 >
                   Generate Report
                 </Button>
@@ -205,7 +225,7 @@ const Reports: React.FC = () => {
               <div className="pt-2">
                 <Button 
                   variant="outline" 
-                  className="w-full border-purple-200 text-purple-600"
+                  className="w-full border-purple-200 text-purple-600 hover:bg-purple-50"
                 >
                   <Download className="mr-2 h-4 w-4" />
                   Export Data
@@ -217,9 +237,14 @@ const Reports: React.FC = () => {
       </div>
       
       <div className="grid grid-cols-1 gap-6 mb-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Department Burnout Trend</CardTitle>
+        <Card className="shadow-md hover:shadow-lg transition-shadow border-t-4 border-t-green-400">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl flex items-center gap-2">
+              <span className="bg-green-100 p-1.5 rounded-md text-green-600">
+                <BarChart2 className="h-5 w-5" />
+              </span>
+              Department Burnout Trend
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-80">
@@ -228,15 +253,22 @@ const Reports: React.FC = () => {
                   data={trendData}
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                      border: '1px solid #e2e8f0'
+                    }}
+                  />
                   <Legend />
-                  <Bar dataKey="engineering" fill="#8269FF" name="Engineering" />
-                  <Bar dataKey="marketing" fill="#FF6B6B" name="Marketing" />
-                  <Bar dataKey="design" fill="#FFD166" name="Design" />
-                  <Bar dataKey="product" fill="#06D6A0" name="Product" />
+                  <Bar dataKey="engineering" fill="#8269FF" name="Engineering" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="marketing" fill="#FF6B6B" name="Marketing" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="design" fill="#FFD166" name="Design" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="product" fill="#06D6A0" name="Product" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -244,40 +276,55 @@ const Reports: React.FC = () => {
         </Card>
       </div>
       
-      <Card>
-        <CardHeader>
-          <CardTitle>Available Reports</CardTitle>
+      <Card className="shadow-md hover:shadow-lg transition-shadow border-t-4 border-t-amber-400">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-xl flex items-center gap-2">
+            <span className="bg-amber-100 p-1.5 rounded-md text-amber-600">
+              <FileText className="h-5 w-5" />
+            </span>
+            Available Reports
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="pb-4 pt-2 text-left font-medium">Report Title</th>
-                  <th className="pb-4 pt-2 text-left font-medium">Date</th>
-                  <th className="pb-4 pt-2 text-left font-medium">Type</th>
-                  <th className="pb-4 pt-2 text-left font-medium">Actions</th>
+                  <th className="pb-4 pt-2 text-left font-medium text-gray-500">Report Title</th>
+                  <th className="pb-4 pt-2 text-left font-medium text-gray-500">Date</th>
+                  <th className="pb-4 pt-2 text-left font-medium text-gray-500">Type</th>
+                  <th className="pb-4 pt-2 text-left font-medium text-gray-500">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {availableReports
                   .filter(report => reportType === 'all' || report.type === reportType)
                   .map((report) => (
-                    <tr key={report.id} className="hover:bg-purple-50">
+                    <tr key={report.id} className="hover:bg-purple-50 transition-colors">
                       <td className="py-5 flex items-center">
                         <div className="bg-purple-100 p-2 rounded-md text-purple-600 mr-3">
                           <report.icon size={16} />
                         </div>
-                        {report.title}
+                        <span className="font-medium">{report.title}</span>
                       </td>
-                      <td className="py-5">{report.date}</td>
-                      <td className="py-5 capitalize">{report.type}</td>
+                      <td className="py-5 text-gray-600">{report.date}</td>
+                      <td className="py-5 capitalize">
+                        <span className={`
+                          px-2 py-1 rounded-full text-xs font-medium
+                          ${report.type === 'burnout' ? 'bg-red-100 text-red-700' : ''}
+                          ${report.type === 'productivity' ? 'bg-blue-100 text-blue-700' : ''}
+                          ${report.type === 'wellness' ? 'bg-green-100 text-green-700' : ''}
+                          ${report.type === 'sprint' ? 'bg-amber-100 text-amber-700' : ''}
+                        `}>
+                          {report.type}
+                        </span>
+                      </td>
                       <td className="py-5">
                         <div className="flex space-x-2">
                           <Button 
                             variant="outline" 
                             size="icon" 
-                            className="h-8 w-8 text-purple-600"
+                            className="h-8 w-8 text-purple-600 hover:bg-purple-50"
                             onClick={() => openReport(report)}
                           >
                             <Eye size={16} />
@@ -285,7 +332,7 @@ const Reports: React.FC = () => {
                           <Button 
                             variant="outline" 
                             size="icon" 
-                            className="h-8 w-8 text-purple-600"
+                            className="h-8 w-8 text-purple-600 hover:bg-purple-50"
                           >
                             <Download size={16} />
                           </Button>
