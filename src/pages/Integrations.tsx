@@ -60,6 +60,21 @@ const Integrations: React.FC = () => {
     }));
   };
   
+  const handleAddIntegration = (integration: any) => {
+    // Convert the new integration format to match our existing format
+    const newIntegration: Integration = {
+      id: integration.id || String(integrations.length + 1),
+      name: integration.name,
+      description: integration.description,
+      // Use a default icon if the integration doesn't provide an icon component
+      icon: integration.icon || Calendar,
+      connected: integration.connected || false
+    };
+    
+    setIntegrations([...integrations, newIntegration]);
+    toast.success(`${integration.name} integration added successfully`);
+  };
+  
   return (
     <DashboardLayout>
       <div className="mb-6 flex justify-between items-center">
@@ -108,6 +123,7 @@ const Integrations: React.FC = () => {
       <AddIntegrationDialog 
         open={addIntegrationOpen}
         onOpenChange={setAddIntegrationOpen}
+        onAddIntegration={handleAddIntegration}
       />
     </DashboardLayout>
   );
