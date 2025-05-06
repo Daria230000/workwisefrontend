@@ -62,12 +62,16 @@ const Integrations: React.FC = () => {
   
   const handleAddIntegration = (integration: any) => {
     // Convert the new integration format to match our existing format
+    // Make sure we handle the icon properly - it should be a React component, not an emoji string
+    const iconComponent = typeof integration.icon === 'string' 
+      ? () => <span className="text-2xl">{integration.icon}</span> // Convert emoji string to a component
+      : integration.icon || Calendar;
+      
     const newIntegration: Integration = {
       id: integration.id || String(integrations.length + 1),
       name: integration.name,
       description: integration.description,
-      // Use a default icon if the integration doesn't provide an icon component
-      icon: integration.icon || Calendar,
+      icon: iconComponent,
       connected: integration.connected || false
     };
     

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,7 @@ interface Integration {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  icon: string; // This is an emoji string
   category: string;
   isNew?: boolean;
 }
@@ -95,8 +94,9 @@ const AddIntegrationDialog: React.FC<AddIntegrationDialogProps> = ({
   const categories = ['all', ...new Set(availableIntegrations.map(integration => integration.category))];
   
   const handleAddIntegration = (integration: Integration) => {
-    toast.success(`${integration.name} integration added successfully!`);
-    onAddIntegration({...integration, connected: true});
+    // We pass the integration with its string emoji icon
+    // The parent component will handle converting it to a React component
+    onAddIntegration(integration);
     onOpenChange(false);
   };
 
