@@ -30,32 +30,32 @@ const EmployeeRiskTable: React.FC<EmployeeRiskTableProps> = ({
           <table className="w-full">
             <thead>
               <tr className="border-b">
-                <th className="pb-3 text-left">Employee</th>
-                <th className="pb-3 text-left">Department</th>
-                <th className="pb-3 text-left">Risk Score</th>
-                <th className="pb-3 text-left">Trend</th>
-                <th className="pb-3 text-left">Primary Reason</th>
-                <th className="pb-3 text-left">Actions</th>
+                <th className="pb-4 pt-2 text-left font-medium">Employee</th>
+                <th className="pb-4 pt-2 text-left font-medium">Department</th>
+                <th className="pb-4 pt-2 text-left font-medium">Risk Score</th>
+                <th className="pb-4 pt-2 text-left font-medium">Trend</th>
+                <th className="pb-4 pt-2 text-left font-medium">Primary Reason</th>
+                <th className="pb-4 pt-2 text-left font-medium">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y">
               {riskEmployeeData.length > 0 ? (
                 riskEmployeeData.map((employee) => (
                   <tr key={employee.id} className="hover:bg-purple-50">
-                    <td className="py-4">{employee.name}</td>
-                    <td className="py-4">{employee.department}</td>
-                    <td className="py-4">
+                    <td className="py-5">{employee.name}</td>
+                    <td className="py-5">{employee.department}</td>
+                    <td className="py-5">
                       <div className="font-medium text-red-500">{employee.risk}%</div>
                     </td>
-                    <td className="py-4">
+                    <td className="py-5">
                       {employee.trend === 'up' ? (
                         <ArrowUp size={16} className="text-red-500" />
                       ) : (
                         <ArrowDown size={16} className="text-green-500" />
                       )}
                     </td>
-                    <td className="py-4">{employee.reason}</td>
-                    <td className="py-4">
+                    <td className="py-5">{employee.reason}</td>
+                    <td className="py-5">
                       <Button 
                         variant="outline" 
                         size="sm" 

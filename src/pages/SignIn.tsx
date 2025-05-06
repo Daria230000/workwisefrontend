@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -107,10 +108,10 @@ const SignIn: React.FC = () => {
             Manage tasks, time, teamwork more efficiently and easily
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="rounded-full bg-black p-2 text-white hover:bg-purple-600">
+            <a href="https://www.facebook.com/profile.php?id=61574562338205&locale=ro_RO" target="_blank" rel="noopener noreferrer" className="rounded-full bg-black p-2 text-white hover:bg-purple-600">
               <Facebook size={24} />
             </a>
-            <a href="#" className="rounded-full bg-black p-2 text-white hover:bg-purple-600">
+            <a href="https://www.instagram.com/workwise.ro/?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer" className="rounded-full bg-black p-2 text-white hover:bg-purple-600">
               <Instagram size={24} />
             </a>
           </div>

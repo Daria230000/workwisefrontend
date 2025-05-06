@@ -1,138 +1,133 @@
 
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { Download, Mail } from 'lucide-react';
 
 interface ViewReportDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  report: {
-    id: number;
+  report?: {
+    id: string;
     title: string;
-    type: string;
     date: string;
-    department?: string;
+    type: string;
+    content?: string;
   };
 }
 
-const performanceData = [
-  { month: 'Jan', team: 76, individual: 68 },
-  { month: 'Feb', team: 74, individual: 72 },
-  { month: 'Mar', team: 78, individual: 75 },
-  { month: 'Apr', team: 82, individual: 78 },
-  { month: 'May', team: 79, individual: 82 },
-  { month: 'Jun', team: 84, individual: 80 },
-];
-
-const burnoutData = [
-  { month: 'Jan', high: 5, medium: 15, low: 25 },
-  { month: 'Feb', high: 8, medium: 17, low: 20 },
-  { month: 'Mar', high: 10, medium: 20, low: 15 },
-  { month: 'Apr', high: 7, medium: 18, low: 18 },
-  { month: 'May', high: 6, medium: 15, low: 22 },
-  { month: 'Jun', high: 5, medium: 12, low: 24 },
-];
-
-const ViewReportDialog: React.FC<ViewReportDialogProps> = ({ 
-  open, 
+const ViewReportDialog: React.FC<ViewReportDialogProps> = ({
+  open,
   onOpenChange,
   report
 }) => {
+  if (!report) return null;
+
+  const generateReportContent = (type: string) => {
+    switch (type) {
+      case 'burnout':
+        return (
+          <div className="space-y-4">
+            <div className="border-b pb-3">
+              <h3 className="font-medium text-lg">Executive Summary</h3>
+              <p className="text-gray-700 mt-2">
+                This report provides an analysis of employee burnout risk factors across the organization. 
+                The overall organizational burnout risk is currently at 42%, which represents a 5% 
+                increase from the previous month.
+              </p>
+            </div>
+            <div className="border-b pb-3">
+              <h3 className="font-medium text-lg">Key Findings</h3>
+              <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                <li>The Engineering department has the highest burnout risk at 58%</li>
+                <li>Weekend work has increased by 22% across all departments</li>
+                <li>Meeting load is up 15% from the previous quarter</li>
+                <li>Task switching has increased by 18% in the last month</li>
+                <li>After-hours communication has seen a 12% increase</li>
+              </ul>
+            </div>
+            <div className="border-b pb-3">
+              <h3 className="font-medium text-lg">Recommendations</h3>
+              <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                <li>Implement no-meeting Fridays to reduce meeting load</li>
+                <li>Set clear boundaries for after-hours communication</li>
+                <li>Review project timelines and resource allocation</li>
+                <li>Consider additional resources for the Engineering team</li>
+                <li>Encourage use of PTO, especially for high-risk employees</li>
+              </ul>
+            </div>
+          </div>
+        );
+      case 'productivity':
+        return (
+          <div className="space-y-4">
+            <div className="border-b pb-3">
+              <h3 className="font-medium text-lg">Overview</h3>
+              <p className="text-gray-700 mt-2">
+                This productivity analysis report examines team performance metrics and identifies 
+                patterns that may impact overall efficiency and output quality.
+              </p>
+            </div>
+            <div className="border-b pb-3">
+              <h3 className="font-medium text-lg">Performance Metrics</h3>
+              <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                <li>Task completion rate: 87% (up 3% from last month)</li>
+                <li>Average time per task: 3.5 hours (down 0.5 hours)</li>
+                <li>Code quality score: 92/100 (up 2 points)</li>
+                <li>Sprint completion rate: 95% (up 5%)</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-medium text-lg">Areas for Improvement</h3>
+              <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                <li>Documentation completion is at 72%, below target of 85%</li>
+                <li>Cross-team collaboration needs improvement</li>
+                <li>QA testing cycles taking longer than expected</li>
+              </ul>
+            </div>
+          </div>
+        );
+      default:
+        return <p className="text-gray-700">No details available for this report.</p>;
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle className="text-xl">{report.title}</DialogTitle>
+          <DialogDescription>
+            Generated on {report.date} • {report.type.charAt(0).toUpperCase() + report.type.slice(1)} Report
+          </DialogDescription>
         </DialogHeader>
         
-        <div className="flex-1 overflow-y-auto py-4">
-          <div className="mb-4">
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-500">Report Type:</span>
-              <span className="font-medium">{report.type}</span>
-            </div>
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-500">Generated on:</span>
-              <span className="font-medium">{report.date}</span>
-            </div>
-            {report.department && (
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-500">Department:</span>
-                <span className="font-medium">{report.department}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <Card>
-              <CardContent className="pt-6">
-                <h3 className="font-medium mb-4">Performance Trends</h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={performanceData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Line type="monotone" dataKey="team" stroke="#8269FF" />
-                      <Line type="monotone" dataKey="individual" stroke="#47B881" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="pt-6">
-                <h3 className="font-medium mb-4">Burnout Risk Distribution</h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={burnoutData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="high" stackId="a" fill="#FF4D4F" name="High Risk" />
-                      <Bar dataKey="medium" stackId="a" fill="#FAAD14" name="Medium Risk" />
-                      <Bar dataKey="low" stackId="a" fill="#52C41A" name="Low Risk" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="font-medium mb-2">Key Findings</h3>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>Engineering team shows 15% higher burnout risk compared to last quarter</li>
-                <li>Marketing department has improved work-life balance by 20%</li>
-                <li>Average working hours decreased by 0.5 hours per day</li>
-                <li>Team collaboration score increased by 12%</li>
-                <li>Sprint completion rate improved from 82% to 89%</li>
-              </ul>
-              
-              <h3 className="font-medium mt-6 mb-2">Recommendations</h3>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>Implement flexible work hours for Engineering team</li>
-                <li>Continue team building activities that proved successful</li>
-                <li>Review task allocation process to better distribute workload</li>
-                <li>Consider additional support resources for high-risk individuals</li>
-                <li>Schedule regular check-ins with team leads to monitor progress</li>
-              </ul>
-            </CardContent>
-          </Card>
+        <div className="my-4">
+          {generateReportContent(report.type)}
         </div>
         
-        <div className="flex justify-end pt-4">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
-          <Button className="ml-2 bg-purple-600 hover:bg-purple-700">Download PDF</Button>
-        </div>
+        <DialogFooter className="flex justify-between sm:justify-between flex-row">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Close
+          </Button>
+          <div className="flex space-x-2">
+            <Button variant="outline" className="flex items-center gap-1">
+              <Mail className="h-4 w-4" />
+              <span>Email</span>
+            </Button>
+            <Button className="bg-purple-600 hover:bg-purple-700 flex items-center gap-1">
+              <Download className="h-4 w-4" />
+              <span>Download</span>
+            </Button>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

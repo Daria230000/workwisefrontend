@@ -1,160 +1,134 @@
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, Clock } from 'lucide-react';
+import { format } from 'date-fns';
+import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface ScheduleMeetingDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  employeeName: string;
+  employeeName?: string;
 }
 
-const ScheduleMeetingDialog: React.FC<ScheduleMeetingDialogProps> = ({ 
-  open, 
+const timeSlots = [
+  '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
+  '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM'
+];
+
+const ScheduleMeetingDialog: React.FC<ScheduleMeetingDialogProps> = ({
+  open,
   onOpenChange,
-  employeeName 
+  employeeName = 'the employee',
 }) => {
-  const [formData, setFormData] = useState({
-    subject: '',
-    date: '',
-    time: '',
-    duration: '30',
-    location: 'video',
-    agenda: ''
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success(`1:1 meeting scheduled with ${employeeName}!`);
+  const [date, setDate] = useState<Date>();
+  const [time, setTime] = useState<string>('');
+  const [meetingType, setMeetingType] = useState<string>('');
+  
+  const handleSchedule = () => {
+    if (!date || !time || !meetingType) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    
+    toast.success(`Meeting scheduled with ${employeeName} on ${format(date, 'MMM dd, yyyy')} at ${time}`);
     onOpenChange(false);
+    
+    // Reset form
+    setDate(undefined);
+    setTime('');
+    setMeetingType('');
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Schedule 1:1 Meeting</DialogTitle>
+          <DialogTitle>Schedule a Meeting</DialogTitle>
+          <DialogDescription>
+            Select a date and time to schedule a meeting with {employeeName}.
+          </DialogDescription>
         </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-4 py-2">
-          <div className="space-y-1">
-            <Label htmlFor="subject">Meeting Subject</Label>
-            <Input 
-              id="subject"
-              name="subject"
-              placeholder="Enter meeting subject"
-              value={formData.subject}
-              onChange={handleChange}
-              required
-            />
+        <div className="grid gap-4 py-4">
+          <div className="flex flex-col space-y-1.5">
+            <label htmlFor="meeting-type" className="text-sm font-medium">Meeting Type</label>
+            <Select value={meetingType} onValueChange={setMeetingType}>
+              <SelectTrigger id="meeting-type">
+                <SelectValue placeholder="Select meeting type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1-on-1">1-on-1 Check-in</SelectItem>
+                <SelectItem value="coaching">Coaching Session</SelectItem>
+                <SelectItem value="feedback">Feedback Review</SelectItem>
+                <SelectItem value="wellness">Wellness Check</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="date">Date</Label>
-              <div className="flex items-center gap-2">
-                <Input 
-                  type="date" 
+          <div className="flex flex-col space-y-1.5">
+            <label htmlFor="date" className="text-sm font-medium">Date</label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
                   id="date"
-                  name="date"
-                  className="flex-1" 
-                  value={formData.date}
-                  onChange={handleChange}
-                  min={new Date().toISOString().split('T')[0]}
-                  required
+                  variant={"outline"}
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 flex justify-center" align="center">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                  disabled={(date) => date < new Date()}
+                  className={cn("p-3 pointer-events-auto")}
                 />
-              </div>
-            </div>
-            
-            <div className="space-y-1">
-              <Label htmlFor="time">Time</Label>
-              <Input 
-                type="time" 
-                id="time"
-                name="time"
-                value={formData.time}
-                onChange={handleChange}
-                required
-              />
-            </div>
+              </PopoverContent>
+            </Popover>
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="duration">Duration</Label>
-              <Select 
-                value={formData.duration} 
-                onValueChange={(value) => handleSelectChange('duration', value)}
-              >
-                <SelectTrigger id="duration">
-                  <SelectValue placeholder="Select duration" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="15">15 minutes</SelectItem>
-                  <SelectItem value="30">30 minutes</SelectItem>
-                  <SelectItem value="45">45 minutes</SelectItem>
-                  <SelectItem value="60">60 minutes</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-1">
-              <Label htmlFor="location">Location</Label>
-              <Select 
-                value={formData.location} 
-                onValueChange={(value) => handleSelectChange('location', value)}
-              >
-                <SelectTrigger id="location">
-                  <SelectValue placeholder="Select location" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="video">Video Call</SelectItem>
-                  <SelectItem value="phone">Phone Call</SelectItem>
-                  <SelectItem value="office">Office</SelectItem>
-                  <SelectItem value="cafe">Coffee Shop</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="flex flex-col space-y-1.5">
+            <label htmlFor="time" className="text-sm font-medium">Time</label>
+            <Select value={time} onValueChange={setTime}>
+              <SelectTrigger id="time" className="flex items-center">
+                <Clock className="mr-2 h-4 w-4" />
+                <SelectValue placeholder="Select time slot" />
+              </SelectTrigger>
+              <SelectContent>
+                {timeSlots.map((slot) => (
+                  <SelectItem key={slot} value={slot}>
+                    {slot}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          
-          <div className="space-y-1">
-            <Label htmlFor="agenda">Agenda</Label>
-            <Textarea 
-              name="agenda"
-              placeholder="List topics to discuss"
-              value={formData.agenda}
-              onChange={handleChange}
-              className="min-h-[100px]"
-              required
-            />
-          </div>
-          
-          <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
-              <Calendar className="mr-2 h-4 w-4" />
-              Schedule Meeting
-            </Button>
-          </DialogFooter>
-        </form>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={handleSchedule} className="bg-purple-500 hover:bg-purple-600">Schedule</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
