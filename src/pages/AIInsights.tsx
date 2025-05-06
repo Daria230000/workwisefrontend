@@ -16,9 +16,6 @@ import {
   CartesianGrid, 
   ResponsiveContainer,
   Tooltip,
-  PieChart,
-  Pie,
-  Cell,
   Legend
 } from 'recharts';
 
@@ -37,16 +34,6 @@ const workloadData = [
   { team: 'Product', low: 1, medium: 4, high: 2 },
   { team: 'QA', low: 2, medium: 3, high: 0 },
 ];
-
-const riskFactorsData = [
-  { name: 'Overtime', value: 35 },
-  { name: 'Weekend Work', value: 25 },
-  { name: 'Task Overload', value: 20 },
-  { name: 'Context Switching', value: 15 },
-  { name: 'Sick Days', value: 5 }
-];
-
-const COLORS = ['#8269FF', '#FF6B6B', '#FFD166', '#06D6A0', '#118AB2'];
 
 const AIInsights: React.FC = () => {
   const [timeRange, setTimeRange] = useState('30');
@@ -84,7 +71,7 @@ const AIInsights: React.FC = () => {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <Card className="col-span-1 md:col-span-2">
           <CardHeader>
             <CardTitle>Top Employees at Risk</CardTitle>
@@ -121,40 +108,6 @@ const AIInsights: React.FC = () => {
                   ))}
                 </tbody>
               </table>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Burnout Risk Factors</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={riskFactorsData}
-                    cx="50%"
-                    cy="40%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {riskFactorsData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend 
-                    layout="horizontal" 
-                    verticalAlign="bottom" 
-                    align="center"
-                    wrapperStyle={{paddingTop: "20px"}}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>

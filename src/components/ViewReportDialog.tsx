@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { Download, Mail } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ViewReportDialogProps {
   open: boolean;
@@ -101,7 +102,7 @@ const ViewReportDialog: React.FC<ViewReportDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-3xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="text-xl">{report.title}</DialogTitle>
           <DialogDescription>
@@ -109,9 +110,11 @@ const ViewReportDialog: React.FC<ViewReportDialogProps> = ({
           </DialogDescription>
         </DialogHeader>
         
-        <div className="my-4">
-          {generateReportContent(report.type)}
-        </div>
+        <ScrollArea className="my-4 max-h-[50vh]">
+          <div className="pr-4">
+            {generateReportContent(report.type)}
+          </div>
+        </ScrollArea>
         
         <DialogFooter className="flex justify-between sm:justify-between flex-row">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
