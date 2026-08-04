@@ -1,17 +1,17 @@
-
 import React, { useState } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Slack, Github, Trello, Calendar, PlusCircle } from 'lucide-react';
+import { Calendar, PlusCircle } from 'lucide-react';
 import AddIntegrationDialog from '../components/AddIntegrationDialog';
+
 
 interface Integration {
   id: string;
   name: string;
   description: string;
-  icon: React.ElementType;
+  icon: string;
   connected: boolean;
 }
 
@@ -21,28 +21,28 @@ const Integrations: React.FC = () => {
       id: '1',
       name: 'Slack',
       description: 'Connect to receive alerts and monitor communication patterns.',
-      icon: Slack,
+      icon: '/logos/slack_logo.png',
       connected: true
     },
     {
       id: '2',
       name: 'GitHub',
       description: 'Monitor code activity and late-night commits.',
-      icon: Github,
+      icon: '/logos/github_logo.webp',
       connected: false
     },
     {
       id: '3',
       name: 'Trello',
       description: 'Track task assignments and completion rates.',
-      icon: Trello,
+      icon: '/logos/trello_logo.png',
       connected: true
     },
     {
       id: '4',
       name: 'Google Calendar',
       description: 'Analyze meeting loads and availability.',
-      icon: Calendar,
+      icon:'/logos/calendar_logo.png',
       connected: false
     }
   ]);
@@ -98,8 +98,12 @@ const Integrations: React.FC = () => {
             <CardContent className="flex flex-col h-full p-0">
               <div className="p-6 flex-grow">
                 <div className="flex items-start justify-between mb-4">
-                  <div className="bg-purple-100 p-3 rounded-lg text-purple-600">
-                    <integration.icon size={24} />
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                  <img
+                      src={integration.icon}
+                      alt={`${integration.name} logo`}
+                      className="w-8 h-8 object-contain"
+                    />
                   </div>
                   {integration.connected && (
                     <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">

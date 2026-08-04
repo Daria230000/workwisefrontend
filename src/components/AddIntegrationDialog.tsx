@@ -24,28 +24,28 @@ const availableIntegrations: Integration[] = [
     id: 'jira',
     name: 'Jira',
     description: 'Connect to Jira to track work items, sprints, and developer activity.',
-    icon: '📊',
+    icon: '/logos/jira_logo.png',
     category: 'Project Management'
   },
   {
-    id: 'slack',
-    name: 'Slack',
-    description: 'Connect to Slack to monitor communication patterns and workload.',
-    icon: '💬',
-    category: 'Communication'
+    id: 'servicenow',
+    name: 'ServiceNow',
+    description: 'Connect to ServiceNow to manage IT services, automate workflows, and track incidents, requests, and project tasks across departments.',
+    icon: '/logos/servicenow_logo.png',
+    category: 'Project Management'
   },
   {
-    id: 'github',
-    name: 'GitHub',
-    description: 'Connect to GitHub to monitor code activity and contributions.',
-    icon: '👨‍💻',
-    category: 'Development'
+    id: 'monday.com',
+    name: 'Monday.com',
+    description: 'Connect to Monday.com to manage projects, track tasks and timelines, and streamline team collaboration through customizable workflows.',
+    icon: '/logos/moday.com_logo.png',
+    category: 'Project Management'
   },
   {
     id: 'zoom',
     name: 'Zoom',
     description: 'Connect to Zoom to analyze meeting frequency and duration.',
-    icon: '🎥',
+    icon: '/logos/zoom_logo.png',
     category: 'Communication',
     isNew: true
   },
@@ -53,7 +53,7 @@ const availableIntegrations: Integration[] = [
     id: 'toggl',
     name: 'Toggl',
     description: 'Connect to Toggl to track time spent on different projects and tasks.',
-    icon: '⏱️',
+    icon: '/logos/toggle_logo.png',
     category: 'Time Tracking',
     isNew: true
   },
@@ -61,21 +61,21 @@ const availableIntegrations: Integration[] = [
     id: 'asana',
     name: 'Asana',
     description: 'Connect to Asana to track tasks and project progress.',
-    icon: '✅',
+    icon: '/logos/asana_logo.jpg',
     category: 'Project Management'
   },
   {
-    id: 'google-calendar',
-    name: 'Google Calendar',
-    description: 'Connect to Google Calendar to analyze meeting load and work hours.',
-    icon: '📅',
+    id: 'clockify',
+    name: 'Clockify',
+    description: 'Connect to Clockify to track time spent on tasks, monitor productivity, and manage billable hours across teams and projects.',
+    icon: '/logos/clockify_logo.png',
     category: 'Time Management'
   },
   {
     id: 'microsoft-teams',
     name: 'Microsoft Teams',
     description: 'Connect to Microsoft Teams to monitor communication and meetings.',
-    icon: '👥',
+    icon: '/logos/teams_logo.webp',
     category: 'Communication'
   }
 ];
@@ -129,7 +129,9 @@ const AddIntegrationDialog: React.FC<AddIntegrationDialogProps> = ({
             <Card key={integration.id} className="overflow-hidden">
               <CardContent className="p-0">
                 <div className="flex p-4">
-                  <div className="mr-4 text-3xl">{integration.icon}</div>
+                <div className="mr-4 flex items-center justify-center w-10 h-10">
+                  <img src={integration.icon} alt={integration.name} className="w-10 h-10 object-contain" />
+                </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <h3 className="font-medium">{integration.name}</h3>
